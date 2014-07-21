@@ -111,6 +111,7 @@ class Badgee
 
 # Create public Badgee instance
 b = new Badgee
+
 # Augment public instance with utility methods
 b.style  = styles.style
 b.get    = (label) ->
@@ -122,6 +123,18 @@ b.config = (conf) ->
     store.each (label, b) ->
       _defineMethods.bind(b.badgee, b.style, b.parent)()
   return currentConf
+
+# Some browsers don't allow to use bind on console object anyway
+# fallback to default if needed
+try
+  b.log()
+catch e
+  fallback = console
+  fallback.define = -> console
+  fallback.style  = b.style
+  fallback.get    = -> console
+  fallback.config = -> b.config
+  b = fallback
 
 module.exports = b
 
