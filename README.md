@@ -1,5 +1,7 @@
 # badgee.js
 
+[![Build Status](https://travis-ci.org/dharFr/badgee.svg?branch=master)](https://travis-ci.org/dharFr/badgee)
+
 browser console improved
 
 ## What is `badgee`?
