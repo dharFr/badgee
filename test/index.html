@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Test Page</title>
+</head>
+<body>
+  <h2>logger.js</h2>
+  <p>Open your Javascript console to see it in action...</p>
+  <script src="badgee.js"></script>
+  <script type="text/javascript">
+    /* global badgee:true */
+
+    (function()
+    {
+      // `badgee` is superset of the 'console' object. You can start using it
+      // without configuration as you usually do with 'console' object.
+      badgee.log( 'Configuring badgee...');
+
+      // A simple configuration object allows to:
+      //  - enable/disable logs globally
+      //  - enable/disable styled badges globally
+      //
+      // Default configuration is: {
+      //   enabled: true,
+      //   styled: true
+      // }
+      badgee.config({
+        enabled: true,
+        styled: true
+      });
+
+      // Called without any arguments, the `config` method returns the current
+      // configuration
+      badgee.log( 'Config set to:', badgee.config() );
+
+      // The `define()` method creates a new logger instance identified by the
+      // first argument. The second argument points to a predefined badged style.
+      var helloBadge = badgee.define('Hello', 'green');
+
+      // helloBadge works the same way as `console` or `badgee` objects, but
+      // every console output is prefixed with a "green" styled badge.
+      helloBadge.log('hello badge defined!');
+
+      // There is already a few styles defined for your badges.
+      // You can list them all using the `style()` method without any argument.
+      badgee.log('Default styles for your badgee:', badgee.style());
+
+      // You can define your own badge style by calling the `style()` method
+      // with a name and a list of properties
+      badgee.style('super_important', {
+        color          : 'white',
+        background     : 'red',
+        'font-size'    : '15px',
+        'font-weight'  : 'bold',
+        'border-radius': '2px',
+        padding        : '1px 3px',
+        margin         : '0 1px'
+      });
+
+      // The style list gets updated after defining a new style
+      badgee.log('Added "super_important" style to the list:', badgee.style());
+
+      // Once a new style is defined, it can be used to define a new badge.
+      var importantBadge = badgee.define('Important', 'super_important');
+
+      // The 'super_important' style is applied
+      importantBadge.log('Don\'t miss this one!');
+    })();
+
+    (function()
+    {
+      // Somewhere else in your application, you may want to reuse an existing
+      // badge. Get it back by calling the `get()` method with the badge
+      // identifier as a first argument.
+      var helloBadge = badgee.get('Hello');
+      helloBadge.log('Using Hello badge from another module' );
+
+      // You can also use the `define()` method on an existing badgee instance
+      // to define a nested badge
+      var helloWorldBadge = helloBadge.define('world', 'purple');
+
+      // The newly defined object is still a `badgee` instance. But every
+      // console output will be prefixed with two badges instead of one.
+      helloWorldBadge.log('hello world badge defined!');
+
+      // As any badgee instance is a 'console' superset, you can also use any
+      // other `console` method, as you used to.
+      helloBadge.group('Creating a "group"');
+        helloBadge.debug('This is a "debug"');
+        helloBadge.info('This is a" info"');
+        helloWorldBadge.warn('This is a "warn"');
+        helloWorldBadge.error('This is an "error"');
+      helloBadge.groupEnd();
+
+      // Some methods can be prefixed with a badge but are still available for
+      // convenience.
+      helloBadge.groupCollapsed('Creating a "groupCollapsed"');
+        helloBadge.assert(false);
+        // 'clear()' method is also available but commented for obvious reason
+        // helloBadge.clear();
+        helloBadge.count('This is a "count"');
+        helloBadge.dir({a: 'this is', b: 'a dir'});
+        helloBadge.table([{key: 'This is'}, {key: 'a table'}]);
+        helloBadge.trace('This is a "trace"');
+        helloBadge.time('t');
+        helloBadge.timeEnd('t');
+      helloBadge.groupEnd();
+    })();
+  </script>
+</body>
+</html>
