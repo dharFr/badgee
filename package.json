@@ -2,8 +2,13 @@
   "name": "badgee",
   "author": "Olivier Audard <audard@gmail.com>",
   "version": "1.0.1",
-  "description": "Browser Console Improved",
+  "description": "a browser console improvement",
   "main": "dist/badgee.min.js",
+  "repository" :
+  {
+    "type" : "git",
+    "url" : "git@github.com:dharFr/badgee.git"
+  },
   "license": [
     {
       "type": "MIT",
