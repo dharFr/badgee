@@ -8,15 +8,17 @@ A browser console improvement
 
 It's an add-on to the browser console, created to improve readability and flexibility. It provides the same API than your brower console, adding a few extra features.
 
-## Compatibility
-
-Work pretty well in Chrome, Firefox Web Console or Firebug and Safari desktop.
+![overview](http://www.dhar.fr/assets/badgee/complete.png)
 
 ## Install with Bower
 
 ```
 bower install badgee
 ```
+
+## Compatibility
+
+Work pretty well in Chrome, Firefox Web Console or Firebug and Safari desktop.
 
 ## Overview
 
@@ -25,6 +27,7 @@ bower install badgee
 ```js
 badgee.log('Configuring badgee...');
 ```
+> ![simple-log](http://www.dhar.fr/assets/badgee/step-1.png)
 
 A simple configuration object allows to:
  - enable/disable logs globally
@@ -44,6 +47,7 @@ Called without any arguments, the `config` method returns the current configurat
 ```js
 badgee.log( 'Config set to:', badgee.config() );
 ```
+> ![config](http://www.dhar.fr/assets/badgee/step-2.png)
 
 The `define()` method creates a new badgee instance identified by the first argument. The second argument points to an already defined style.
 The retunred object works the same way as `console` or `badgee` objects, but every console output is prefixed with a "green" styled badge.
@@ -52,6 +56,7 @@ The retunred object works the same way as `console` or `badgee` objects, but eve
 var helloBadge = badgee.define('Hello', 'green');
 helloBadge.log('hello badge defined!');
 ```
+> ![define](http://www.dhar.fr/assets/badgee/step-3.png)
 
 There is already a few styles defined for your badges.
 You can list them all using the `style()` method without any argument.
@@ -60,6 +65,7 @@ You can list them all using the `style()` method without any argument.
 badgee.log('Default styles for your badgee:', badgee.style());
 // Default styles for your badgee: ["green", "purple", "orange", "red", "yellow"]
 ```
+> ![styles](http://www.dhar.fr/assets/badgee/step-4.png)
 
 You can define your own badge style by calling the `style()` method with a name and a list of properties.
 
@@ -81,6 +87,7 @@ The style list gets updated after defining a new style.
 badgee.log('Added "super_important" style to the list:', badgee.style());
 // Added "super_important" style to the list: ["green", "purple", "orange", "red", "yellow", "super_important"]
 ```
+> ![style](http://www.dhar.fr/assets/badgee/step-5.png)
 
 Once a new style is defined, it can be used to define a new badge.
 
@@ -88,6 +95,7 @@ Once a new style is defined, it can be used to define a new badge.
 var importantBadge = badgee.define('Important', 'super_important');
 importantBadge.log("Don't miss this one!");
 ```
+> ![define](http://www.dhar.fr/assets/badgee/step-6.png)
 
 Somewhere else in your application, you may want to reuse an existing badge. 
 Get it back by calling the `get()` method with the badge identifier as a first argument.
@@ -96,6 +104,7 @@ Get it back by calling the `get()` method with the badge identifier as a first a
 var helloBadge = badgee.get('Hello');
 helloBadge.log('Using Hello badge from another module' );
 ```
+> ![get](http://www.dhar.fr/assets/badgee/step-7.png)
 
 You can also use the `define()` method on an existing badgee instance to define a nested badge.
 The newly defined object is still a `badgee` instance. 
@@ -105,6 +114,7 @@ But every console output will be prefixed with two badges instead of one.
 var helloWorldBadge = helloBadge.define('world', 'purple');
 helloWorldBadge.log('hello world badge defined!');
 ```
+> ![define](http://www.dhar.fr/assets/badgee/step-8.png)
 
 As any badgee instance is a 'console' superset, you can also use any other `console` method, as you used to.
 
@@ -116,6 +126,7 @@ helloBadge.group('Creating a "group"');
   helloWorldBadge.error('This is an "error"');
 helloBadge.groupEnd();
 ```
+> ![group](http://www.dhar.fr/assets/badgee/step-9.png)
 
 Some methods can be prefixed with a badge but are still available for convenience.
 
