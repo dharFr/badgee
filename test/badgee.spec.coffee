@@ -98,77 +98,186 @@ describe 'badgee', ->
       'timelineEnd'
     ]
 
-    spyConsoleCallWithArgs = (badgeeInstance, conf, method, args, closure) ->
-
+    _spyConsole = (conf, method) ->
       sinon.spy(console, method)
       # the config method redefines console bindings
       # We need to call it here for the spy to be called
       badgee.config.call badgee, conf
 
-      # this one makes test output really messy,
-      # but the test is OK so...
-      badgeeInstance[method] args...
-
-      closure()
+    _restoreConsole = (method) ->
       # restore the original console method
       console[method].restore()
       badgee.config defaultConf
-      return
 
     for method in methods
       do (method) ->
 
         describe method, ->
 
-          it "badgee.#{method} should be function", ->
-            expect(badgee).to.respondTo method
+          describe 'when enabled', ->
 
-          it "badge1.#{method} should be function", ->
-            expect(badge1.instance).to.respondTo method
+            beforeEach ->
+              _spyConsole defaultConf, method
 
-          it "badge2.#{method} should be a function", ->
-            expect(badge2.instance).to.respondTo method
+            afterEach ->
+              _restoreConsole method
 
-          it "badgee.#{method} should call console.#{method} with the exact same parameters", ->
-            args = ['hello', 1234, {key1: 'value', key2: 0}, true]
 
-            spyConsoleCallWithArgs badgee, defaultConf, method, args, ->
+            it "badgee.#{method} should be function", ->
+              expect(badgee).to.respondTo method
+
+            it "badge1.#{method} should be function", ->
+              expect(badge1.instance).to.respondTo method
+
+            it "badge2.#{method} should be a function", ->
+              expect(badge2.instance).to.respondTo method
+
+            it "badgee.#{method} should call console.#{method} with the exact same parameters", ->
+              args = ['hello', 1234, {key1: 'value', key2: 0}, true]
+
+              badgee[method] args...
+
               expect(console[method].called).to.be.true
               expect(console[method].calledWithExactly args...).to.be.true
 
-          it "badge1.#{method} should call console.#{method} with extra parameters", ->
-              args = ['hello', 1234, {key1: 'value', key2: 0}, true]
+            it "badge1.#{method} should call console.#{method} with extra parameters", ->
+                args = ['hello', 1234, {key1: 'value', key2: 0}, true]
 
-              spyConsoleCallWithArgs badge1.instance, defaultConf, method, args, ->
+                badge1.instance[method] args...
+
                 expect(console[method].calledOnce).to.be.true
                 expect(console[method].calledWithExactly "#{badge1.cName}%c", badge1.cSytle, 'p:a', args...).to.be.true
 
-          it "badge2.#{method} should call console.#{method} with extra parameters", ->
-              args = ['hello', 1234, {key1: 'value', key2: 0}, true]
+            it "badge2.#{method} should call console.#{method} with extra parameters", ->
+                args = ['hello', 1234, {key1: 'value', key2: 0}, true]
 
-              spyConsoleCallWithArgs badge2.instance, defaultConf, method, args, ->
+                badge2.instance[method] args...
+
                 expect(console[method].calledOnce).to.be.true
                 expect(console[method].calledWithExactly "#{[badge1.cName,badge2.cName].join('')}%c", badge1.cSytle, badge2.cSytle, 'p:a', args...).to.be.true
 
-          it "badgee.#{method} shouldn't call console when disabled", ->
-            args = ['hello', 1234, {key1: 'value', key2: 0}, true]
+          describe 'when disabled', ->
 
-            conf = enabled: no
-            spyConsoleCallWithArgs badgee, conf, method, args, ->
+            beforeEach ->
+              conf = enabled: no
+              _spyConsole conf, method
+
+            afterEach ->
+              _restoreConsole method
+
+            it "badgee.#{method} should be function", ->
+              expect(badgee).to.respondTo method
+
+            it "badge1.#{method} should be function", ->
+              expect(badge1.instance).to.respondTo method
+
+            it "badge2.#{method} should be a function", ->
+              expect(badge2.instance).to.respondTo method
+
+            it "badgee.#{method} shouldn't call console", ->
+              args = ['hello', 1234, {key1: 'value', key2: 0}, true]
+
+              badgee[method] args...
+
               expect(console[method].called).to.be.false
 
-          it "badge1.#{method} shouldn't call console when disabled", ->
-            args = ['hello', 1234, {key1: 'value', key2: 0}, true]
+            it "badge1.#{method} shouldn't call console", ->
+              args = ['hello', 1234, {key1: 'value', key2: 0}, true]
 
-            conf = enabled: no
-            spyConsoleCallWithArgs badge1.instance, conf, method, args, ->
+              badge1.instance[method] args...
+
               expect(console[method].called).to.be.false
 
-          it "badge2.#{method} shouldn't call console when disabled", ->
-            args = ['hello', 1234, {key1: 'value', key2: 0}, true]
+            it "badge2.#{method} shouldn't call console", ->
+              args = ['hello', 1234, {key1: 'value', key2: 0}, true]
 
-            conf = enabled: no
-            spyConsoleCallWithArgs badge2.instance, conf, method, args, ->
+              badge2.instance[method] args...
+
               expect(console[method].called).to.be.false
 
+
+    for method in unformatableMethods
+      do (method) ->
+
+        describe method, ->
+
+          describe 'when enabled', ->
+
+            beforeEach ->
+              _spyConsole defaultConf, method
+
+            afterEach ->
+              _restoreConsole method
+
+            it "badgee.#{method} should be function", ->
+              expect(badgee).to.respondTo method
+
+            it "badge1.#{method} should be function", ->
+              expect(badge1.instance).to.respondTo method
+
+            it "badge2.#{method} should be a function", ->
+              expect(badge2.instance).to.respondTo method
+
+            it "badgee.#{method} should call console.#{method} with the exact same parameters", ->
+              args = ['hello', 1234, {key1: 'value', key2: 0}, true]
+
+              badgee[method] args...
+
+              expect(console[method].called).to.be.true
+              expect(console[method].calledWithExactly args...).to.be.true
+
+            it "badge1.#{method} should call console.#{method} without extra parameters", ->
+                args = ['hello', 1234, {key1: 'value', key2: 0}, true]
+
+                badge1.instance[method] args...
+
+                expect(console[method].calledOnce).to.be.true
+                expect(console[method].calledWithExactly args...).to.be.true
+
+            it "badge2.#{method} should call console.#{method} without extra parameters", ->
+                args = ['hello', 1234, {key1: 'value', key2: 0}, true]
+
+                badge2.instance[method] args...
+
+                expect(console[method].calledOnce).to.be.true
+                expect(console[method].calledWithExactly args...).to.be.true
+
+          describe 'when disabled', ->
+
+            beforeEach ->
+              conf = enabled: no
+              _spyConsole conf, method
+
+            afterEach ->
+              _restoreConsole method
+
+            it "badgee.#{method} should be function", ->
+              expect(badgee).to.respondTo method
+
+            it "badge1.#{method} should be function", ->
+              expect(badge1.instance).to.respondTo method
+
+            it "badge2.#{method} should be a function", ->
+              expect(badge2.instance).to.respondTo method
+
+            it "badgee.#{method} shouldn't call console when disabled", ->
+              args = ['hello', 1234, {key1: 'value', key2: 0}, true]
+
+              badgee[method] args...
+
+              expect(console[method].called).to.be.false
+
+            it "badge1.#{method} shouldn't call console", ->
+              args = ['hello', 1234, {key1: 'value', key2: 0}, true]
+
+              badge1.instance[method] args...
+
+              expect(console[method].called).to.be.false
+
+            it "badge2.#{method} shouldn't call console", ->
+              args = ['hello', 1234, {key1: 'value', key2: 0}, true]
+
+              badge2.instance[method] args...
+
+              expect(console[method].called).to.be.false
 
