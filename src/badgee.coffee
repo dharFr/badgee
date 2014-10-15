@@ -65,6 +65,7 @@ _defineMethods = (style, parentName) ->
 
   unless currentConf.enabled
     @[method] = noop for method in methods
+    @[method] = noop for method in unformatableMethods
   else
     # get arguments to pass to console object
     args = argsForBadgee @label, style, parentName
