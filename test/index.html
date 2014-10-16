@@ -17,6 +17,9 @@
       // without configuration as you usually do with 'console' object.
       badgee.log( 'Configuring badgee...');
 
+      // Configuration
+      // =============
+
       // A simple configuration object allows to:
       //  - enable/disable logs globally
       //  - enable/disable styled badges globally
@@ -34,6 +37,9 @@
       // configuration
       badgee.log( 'Config set to:', badgee.config() );
 
+      // 'define()'' method
+      // ==================
+
       // The `define()` method creates a new logger instance identified by the
       // first argument. The second argument points to a predefined badged style.
       var helloBadge = badgee.define('Hello', 'green');
@@ -42,9 +48,15 @@
       // every console output is prefixed with a "green" styled badge.
       helloBadge.log('hello badge defined!');
 
+      // Styles
+      // ======
+
       // There is already a few styles defined for your badges.
       // You can list them all using the `style()` method without any argument.
       badgee.log('Default styles for your badgee:', badgee.style());
+
+      // Want more details about a particular style?
+      badgee.log('Want more details about "green" style?', badgee.style('green'));
 
       // You can define your own badge style by calling the `style()` method
       // with a name and a list of properties
@@ -59,13 +71,38 @@
       });
 
       // The style list gets updated after defining a new style
-      badgee.log('Added "super_important" style to the list:', badgee.style());
+      badgee.log('Added "super_important" style to the list:', badgee.style(), badgee.style('super_important'));
 
       // Once a new style is defined, it can be used to define a new badge.
       var importantBadge = badgee.define('Important', 'super_important');
 
       // The 'super_important' style is applied
       importantBadge.log('Don\'t miss this one!');
+
+      // But you don't need to define every single properties
+      // Style have default values
+      badgee.log('Properties applied by default when adding a new style:', badgee.defaultStyle());
+
+      // Defining a new style only needs a few properties
+      badgee.style('abcdef', {
+        background : '#abcdef',
+        color      : 'black'
+      });
+      badgee.log('Added "abcdef" style to the list:', badgee.style('abcdef'));
+
+      // Default style properties are overridable
+      badgee.defaultStyle({
+        'border-radius': '0',
+        'border'       : '1px solid blue',
+        'padding'      : '0',
+        'margin'       : '1px',
+        'color'        : 'black'
+      });
+      badgee.log('Definied new default properties for styles:', badgee.defaultStyle());
+      badgee.style('styled', {background: 'yellow'});
+      var styledBadge = badgee.define('Styled', 'styled');
+      styledBadge.log('Using another new style');
+
     })();
 
     (function()

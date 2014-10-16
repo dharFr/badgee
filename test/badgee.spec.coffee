@@ -62,7 +62,7 @@ describe 'badgee', ->
     label   : 'badge2'
     style   : 'test',
     cName   : "%cbadge2"
-    cSytle  : "color:white;background:red;"
+    cSytle  : "border-radius:2px;padding:1px 3px;margin:0 1px;color:white;background:red;"
     instance: null
 
   describe 'badgee.define', ->
@@ -155,6 +155,7 @@ describe 'badgee', ->
 
                 expect(console[method].calledOnce).to.be.true
                 expect(console[method].calledWithExactly "#{[badge1.cName,badge2.cName].join('')}%c", badge1.cSytle, badge2.cSytle, 'p:a', args...).to.be.true
+                console.log '>>>', console[method].getCall(0).args
 
           describe 'when disabled', ->
 

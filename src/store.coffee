@@ -17,6 +17,4 @@ class Store
   each: (func) ->
     func(name, obj) for name, obj of @_store
 
-
-
 module.exports = Store

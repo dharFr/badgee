@@ -114,10 +114,10 @@ class Badgee
 b = new Badgee
 
 # Augment public instance with utility methods
-b.style  = styles.style
-b.get    = (label) ->
-  store.get(label)?.badgee
-b.config = (conf) ->
+b.style         = styles.style
+b.defaultStyle  = styles.defaults
+b.get           = (label) -> store.get(label)?.badgee
+b.config        = (conf) ->
   currentConf = config(conf)
   # when conf is updated, redefine every badgee method
   if conf
@@ -133,6 +133,7 @@ catch e
   fallback = console
   fallback.define = -> console
   fallback.style  = b.style
+  b.styleDefaults = b.styleDefaults
   fallback.get    = -> console
   fallback.config = -> b.config
   b = fallback
