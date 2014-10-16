@@ -1,7 +1,7 @@
 !function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.badgee=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
 (function (global){
 
-/*! badgee v1.0.0 - MIT license */
+/*! badgee v1.1.0 - MIT license */
 'use strict';
 var Badgee, Store, argsForBadgee, b, concatLabelToOutput, config, currentConf, e, fallback, method, methods, noop, properties, store, styles, unformatableMethods, _defineMethods, _i, _len, _ref,
   __slice = [].slice;
@@ -122,6 +122,8 @@ b = new Badgee;
 
 b.style = styles.style;
 
+b.defaultStyle = styles.defaults;
+
 b.get = function(label) {
   var _ref1;
   return (_ref1 = store.get(label)) != null ? _ref1.badgee : void 0;
@@ -146,6 +148,7 @@ try {
     return console;
   };
   fallback.style = b.style;
+  b.styleDefaults = b.styleDefaults;
   fallback.get = function() {
     return console;
   };
@@ -231,7 +234,7 @@ module.exports = Store;
 
 
 },{}],4:[function(_dereq_,module,exports){
-var Store, black, defaults, extend, store, styles, white;
+var Store, black, defaults, extend, store, styles;
 
 Store = _dereq_('./store');
 
@@ -239,13 +242,29 @@ extend = _dereq_('./utils').extend;
 
 store = new Store;
 
+defaults = {
+  'border-radius': '2px',
+  'padding': '1px 3px',
+  'margin': '0 1px',
+  'color': 'white'
+};
+
 styles = {
   style: function(name, style) {
     if ((name != null) && (style != null)) {
+      style = extend({}, defaults, style);
       store.add(name, style);
+    } else if (name != null) {
+      return store.get(name);
     } else {
       return store.list();
     }
+  },
+  defaults: function(style) {
+    if (style != null) {
+      defaults = style;
+    }
+    return defaults;
   },
   stringForStyle: function(name) {
     var k, style, v;
@@ -262,37 +281,55 @@ styles = {
   }
 };
 
-defaults = {
-  'border-radius': '2px',
-  'padding': '1px 3px',
-  'margin': '0 1px'
-};
-
-white = {
-  'color': 'white'
-};
-
 black = {
   'color': 'black'
 };
 
-styles.style('green', extend({}, defaults, white, {
+styles.style('black', extend({}, {
+  'background': 'black'
+}));
+
+styles.style('blue', extend({}, {
+  'background': 'blue'
+}));
+
+styles.style('brown', extend({}, {
+  'background': 'brown'
+}));
+
+styles.style('gray', extend({}, {
+  'background': 'gray'
+}));
+
+styles.style('green', extend({}, {
   'background': 'green'
 }));
 
-styles.style('purple', extend({}, defaults, white, {
+styles.style('purple', extend({}, {
   'background': 'purple'
 }));
 
-styles.style('orange', extend({}, defaults, white, {
-  'background': 'orange'
-}));
-
-styles.style('red', extend({}, defaults, white, {
+styles.style('red', extend({}, {
   'background': 'red'
 }));
 
-styles.style('yellow', extend({}, defaults, black, {
+styles.style('cyan', extend({}, black, {
+  'background': 'cyan'
+}));
+
+styles.style('magenta', extend({}, black, {
+  'background': 'magenta'
+}));
+
+styles.style('orange', extend({}, black, {
+  'background': 'orange'
+}));
+
+styles.style('pink', extend({}, black, {
+  'background': 'pink'
+}));
+
+styles.style('yellow', extend({}, black, {
   'background': 'yellow'
 }));
 

@@ -1,4 +1,4 @@
-###! badgee v1.0.0 - MIT license ###
+###! badgee v1.1.0 - MIT license ###
 'use strict'
 
 # For the record, every single console methods and properties

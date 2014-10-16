@@ -29,6 +29,8 @@ badgee.log('Configuring badgee...');
 ```
 > ![simple-log](http://www.dhar.fr/assets/badgee/step-1.png)
 
+### Configuration
+
 A simple configuration object allows to:
  - enable/disable logs globally
  - enable/disable styled badges globally
@@ -49,6 +51,8 @@ badgee.log( 'Config set to:', badgee.config() );
 ```
 > ![config](http://www.dhar.fr/assets/badgee/step-2.png)
 
+### Defining a new badgee instance
+
 The `define()` method creates a new badgee instance identified by the first argument. The second argument points to an already defined style.
 The retunred object works the same way as `console` or `badgee` objects, but every console output is prefixed with a "green" styled badge.
 
@@ -57,6 +61,8 @@ var helloBadge = badgee.define('Hello', 'green');
 helloBadge.log('hello badge defined!');
 ```
 > ![define](http://www.dhar.fr/assets/badgee/step-3.png)
+
+### Styling badges
 
 There is already a few styles defined for your badges.
 You can list them all using the `style()` method without any argument.
@@ -97,6 +103,8 @@ importantBadge.log("Don't miss this one!");
 ```
 > ![define](http://www.dhar.fr/assets/badgee/step-6.png)
 
+### Reusing badgee instances
+
 Somewhere else in your application, you may want to reuse an existing badge. 
 Get it back by calling the `get()` method with the badge identifier as a first argument.
 
@@ -105,6 +113,8 @@ var helloBadge = badgee.get('Hello');
 helloBadge.log('Using Hello badge from another module' );
 ```
 > ![get](http://www.dhar.fr/assets/badgee/step-7.png)
+
+### Nested badges
 
 You can also use the `define()` method on an existing badgee instance to define a nested badge.
 The newly defined object is still a `badgee` instance. 
@@ -168,11 +178,19 @@ When called without parameters, returns the list of already defined styles.
 
  - `name`
     Type: String
-    The name of the new style to define.
+    The name of the new style to define/retrive.
  - `style`
     Type: Object
     A set of key/value pairs to define a CSS style for badges.
 
+### `badgee.defaultStyle([style])`
+
+When called without parameters, returns the current default styles.
+
+ - `style`
+    Type: Object
+    A set of key/value pairs to apply by defaultwhen defining a new style for badges.
+ 
 ### `badgee.define(label, style)`
 
 Creates and returns a new badgee instance, for which every console output will be prefixed with the provided `label`, formated according to provided `style` definition.
@@ -185,7 +203,6 @@ Creates and returns a new badgee instance, for which every console output will b
    Type: String  
    The name of an already defined badgee style (see `badgee.style()`)
    
-
 ### `badgee.get(label)`
 
 Returns an existing badgee instance, identified by its `label`
