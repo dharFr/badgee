@@ -31,8 +31,8 @@ black = 'color': 'black'
 
 styles.style 'green',  extend {}, defaults, white, 'background': 'green'
 styles.style 'purple', extend {}, defaults, white, 'background': 'purple'
-styles.style 'orange', extend {}, defaults, white, 'background': 'orange'
 styles.style 'red',    extend {}, defaults, white, 'background': 'red'
+styles.style 'orange', extend {}, defaults, black, 'background': 'orange'
 styles.style 'yellow', extend {}, defaults, black, 'background': 'yellow'
 
 
