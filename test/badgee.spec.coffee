@@ -45,11 +45,62 @@ describe 'badgee', ->
       expect(styles).to.be.an 'array'
       expect(styles).to.have.length.of.at.least(5)
 
+    it 'should return a style definition', ->
+      style = badgee.style('green')
+      expect(style).to.be.an 'object'
+      expect(style).to.have.property 'background', 'green'
+
     it 'should allow to define a new style', ->
       badgee.style('test', {color:'white',background:'red'})
       expect(badgee.style()).to.include 'test'
 
+      testStyle = badgee.style('test')
 
+      expect(testStyle).to.be.an 'object'
+      expect(testStyle).to.have.property 'background', 'red'
+      expect(testStyle).to.have.property 'color', 'white'
+
+  describe 'badgee.defaultStyle', ->
+
+
+    it 'should be a function', ->
+      expect(badgee).itself.to.respondTo 'defaultStyle'
+
+    it 'should return default properties for new styles', ->
+      def = badgee.defaultStyle()
+
+      expect(def).to.be.an 'object'
+      expect(def).to.have.property 'border-radius', '2px'
+      expect(def).to.have.property 'padding', '1px 3px'
+      expect(def).to.have.property 'margin', '0 1px'
+      expect(def).to.have.property 'color', 'white'
+
+    it 'should be used when defining a new style', ->
+      badgee.style('defTest', {color:'black',background:'red'})
+      testStyle = badgee.style('defTest')
+
+      expect(testStyle).to.be.an 'object'
+      expect(testStyle).to.have.property 'border-radius', '2px'
+      expect(testStyle).to.have.property 'padding', '1px 3px'
+      expect(testStyle).to.have.property 'margin', '0 1px'
+      expect(testStyle).to.have.property 'color', 'black'
+
+    it 'should allow to define new default properties', ->
+
+      # Save default style
+      def = badgee.defaultStyle()
+
+      badgee.defaultStyle(color:'red')
+      def = badgee.defaultStyle()
+
+      expect(def).to.be.an 'object'
+      expect(def).not.to.have.property 'border-radius'
+      expect(def).not.to.have.property 'padding'
+      expect(def).not.to.have.property 'margin'
+      expect(def).to.have.property 'color', 'red'
+
+      # Restore default style
+      badgee.defaultStyle def
 
   badge1 =
     label   : 'badge1'
