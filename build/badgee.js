@@ -1,24 +1,327 @@
 !function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.badgee=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
 (function (global){
-"use strict";var Badgee,Store,argsForBadgee,b,concatLabelToOutput,config,currentConf,e,fallback,method,methods,noop,properties,store,styles,unformatableMethods,_defineMethods,_i,_len,_ref,__slice=[].slice;for(properties=["memory"],methods=["debug","dirxml","error","group","groupCollapsed","info","log","warn"],unformatableMethods=["assert","clear","count","dir","exception","groupEnd","markTimeline","profile","profileEnd","table","trace","time","timeEnd","timeStamp","timeline","timelineEnd"],noop=function(){},global.console=global.console||{},_ref=methods.concat(unformatableMethods),_i=0,_len=_ref.length;_len>_i;_i++)method=_ref[_i],console[method]||(console[method]=noop);config=_dereq_("./config"),Store=_dereq_("./store"),styles=_dereq_("./styles"),currentConf=config(),store=new Store,concatLabelToOutput=function(e,o,t){return null==e&&(e=""),null==t&&(t=!1),""+e+(t?"%c":"[")+o+(t?"":"]")},argsForBadgee=function(e,o,t){var n,r;return n=[],currentConf.styled||(o=!1),t&&(r=store.get(t),n=argsForBadgee(r.badgee.label,r.style,r.parent)),e&&(n[0]=concatLabelToOutput(n[0],e,!!o)),o&&n.push(styles.stringForStyle(o)),n},_defineMethods=function(e,o){var t,n,r,l,s,a,i,c,d,u,f,h,b;if(currentConf.enabled){for(t=argsForBadgee(this.label,e,o),e&&t.length>1&&(t[0]+="%c",t.push("p:a")),l=0,i=methods.length;i>l;l++)method=methods[l],this[method]=(f=console[method]).bind.apply(f,[console].concat(__slice.call(t)));for(s=0,c=unformatableMethods.length;c>s;s++)method=unformatableMethods[s],this[method]=console[method].bind(console);for(b=[],u=0,d=properties.length;d>u;u++)n=properties[u],b.push(this[n]=console[n]);return b}for(h=[],r=0,a=methods.length;a>r;r++)method=methods[r],h.push(this[method]=noop);return h},Badgee=function(){function e(e,o,t){this.label=e,_defineMethods.bind(this,o,t)(),store.add(this.label,{badgee:this,style:o,parent:t})}return e.prototype.define=function(o,t){return new e(o,t,this.label)},e}(),b=new Badgee,b.style=styles.style,b.get=function(e){var o;return null!=(o=store.get(e))?o.badgee:void 0},b.config=function(e){return currentConf=config(e),e&&store.each(function(e,o){return _defineMethods.bind(o.badgee,o.style,o.parent)()}),currentConf};try{b.log()}catch(_error){e=_error,fallback=console,fallback.define=function(){return console},fallback.style=b.style,fallback.get=function(){return console},fallback.config=function(){return b.config},b=fallback}module.exports=b;
-//# sourceMappingURL=out.js.map
+
+/*! badgee v1.0.0 - MIT license */
+'use strict';
+var Badgee, Store, argsForBadgee, b, concatLabelToOutput, config, currentConf, e, fallback, method, methods, noop, properties, store, styles, unformatableMethods, _defineMethods, _i, _len, _ref,
+  __slice = [].slice;
+
+properties = ['memory'];
+
+methods = ['debug', 'dirxml', 'error', 'group', 'groupCollapsed', 'info', 'log', 'warn'];
+
+unformatableMethods = ['assert', 'clear', 'count', 'dir', 'exception', 'groupEnd', 'markTimeline', 'profile', 'profileEnd', 'table', 'trace', 'time', 'timeEnd', 'timeStamp', 'timeline', 'timelineEnd'];
+
+noop = function() {};
+
+global.console = global.console || {};
+
+_ref = methods.concat(unformatableMethods);
+for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+  method = _ref[_i];
+  if (!console[method]) {
+    console[method] = noop;
+  }
+}
+
+config = _dereq_('./config');
+
+Store = _dereq_('./store');
+
+styles = _dereq_('./styles');
+
+currentConf = config();
+
+store = new Store;
+
+concatLabelToOutput = function(out, label, hasStyle) {
+  if (out == null) {
+    out = '';
+  }
+  if (hasStyle == null) {
+    hasStyle = false;
+  }
+  return "" + out + (hasStyle ? '%c' : '[') + label + (!hasStyle ? ']' : '');
+};
+
+argsForBadgee = function(label, style, parentName) {
+  var args, parent;
+  args = [];
+  if (!currentConf.styled) {
+    style = false;
+  }
+  if (parentName) {
+    parent = store.get(parentName);
+    args = argsForBadgee(parent.badgee.label, parent.style, parent.parent);
+  }
+  if (label) {
+    args[0] = concatLabelToOutput(args[0], label, !!style);
+  }
+  if (style) {
+    args.push(styles.stringForStyle(style));
+  }
+  return args;
+};
+
+_defineMethods = function(style, parentName) {
+  var args, prop, _j, _k, _l, _len1, _len2, _len3, _len4, _len5, _m, _n, _ref1, _results, _results1;
+  if (!currentConf.enabled) {
+    for (_j = 0, _len1 = methods.length; _j < _len1; _j++) {
+      method = methods[_j];
+      this[method] = noop;
+    }
+    _results = [];
+    for (_k = 0, _len2 = unformatableMethods.length; _k < _len2; _k++) {
+      method = unformatableMethods[_k];
+      _results.push(this[method] = noop);
+    }
+    return _results;
+  } else {
+    args = argsForBadgee(this.label, style, parentName);
+    if (style && args.length > 1) {
+      args[0] += '%c';
+      args.push('p:a');
+    }
+    for (_l = 0, _len3 = methods.length; _l < _len3; _l++) {
+      method = methods[_l];
+      this[method] = (_ref1 = console[method]).bind.apply(_ref1, [console].concat(__slice.call(args)));
+    }
+    for (_m = 0, _len4 = unformatableMethods.length; _m < _len4; _m++) {
+      method = unformatableMethods[_m];
+      this[method] = console[method].bind(console);
+    }
+    _results1 = [];
+    for (_n = 0, _len5 = properties.length; _n < _len5; _n++) {
+      prop = properties[_n];
+      _results1.push(this[prop] = console[prop]);
+    }
+    return _results1;
+  }
+};
+
+Badgee = (function() {
+  function Badgee(label, style, parentName) {
+    this.label = label;
+    _defineMethods.bind(this, style, parentName)();
+    store.add(this.label, {
+      badgee: this,
+      style: style,
+      parent: parentName
+    });
+  }
+
+  Badgee.prototype.define = function(label, style) {
+    return new Badgee(label, style, this.label);
+  };
+
+  return Badgee;
+
+})();
+
+b = new Badgee;
+
+b.style = styles.style;
+
+b.get = function(label) {
+  var _ref1;
+  return (_ref1 = store.get(label)) != null ? _ref1.badgee : void 0;
+};
+
+b.config = function(conf) {
+  currentConf = config(conf);
+  if (conf) {
+    store.each(function(label, b) {
+      return _defineMethods.bind(b.badgee, b.style, b.parent)();
+    });
+  }
+  return currentConf;
+};
+
+try {
+  b.log();
+} catch (_error) {
+  e = _error;
+  fallback = console;
+  fallback.define = function() {
+    return console;
+  };
+  fallback.style = b.style;
+  fallback.get = function() {
+    return console;
+  };
+  fallback.config = function() {
+    return b.config;
+  };
+  b = fallback;
+}
+
+module.exports = b;
+
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./config":2,"./store":3,"./styles":4}],2:[function(_dereq_,module,exports){
-var config,configure,defaults,extend;extend=_dereq_("./utils").extend,defaults={enabled:!0,styled:!0},config=extend({},defaults),configure=function(e){return"object"==typeof e&&(config=extend({},defaults,e)),config},module.exports=configure;
-//# sourceMappingURL=out.js.map
+var config, configure, defaults, extend;
+
+extend = _dereq_('./utils').extend;
+
+defaults = {
+  enabled: true,
+  styled: true
+};
+
+config = extend({}, defaults);
+
+configure = function(conf) {
+  if (typeof conf === 'object') {
+    config = extend({}, defaults, conf);
+  }
+  return config;
+};
+
+module.exports = configure;
+
 
 },{"./utils":5}],3:[function(_dereq_,module,exports){
-var Store;Store=function(){function t(){this._store={}}return t.prototype.add=function(t,r){return this._store[t]=r},t.prototype.get=function(t){return this._store[t]?this._store[t]:null},t.prototype.list=function(){var t,r,o,e;o=this._store,e=[];for(t in o)r=o[t],e.push(t);return e},t.prototype.each=function(t){var r,o,e,n;e=this._store,n=[];for(r in e)o=e[r],n.push(t(r,o));return n},t}(),module.exports=Store;
-//# sourceMappingURL=out.js.map
+var Store;
+
+Store = (function() {
+  function Store() {
+    this._store = {};
+  }
+
+  Store.prototype.add = function(name, obj) {
+    return this._store[name] = obj;
+  };
+
+  Store.prototype.get = function(name) {
+    if (this._store[name]) {
+      return this._store[name];
+    } else {
+      return null;
+    }
+  };
+
+  Store.prototype.list = function() {
+    var name, obj, _ref, _results;
+    _ref = this._store;
+    _results = [];
+    for (name in _ref) {
+      obj = _ref[name];
+      _results.push(name);
+    }
+    return _results;
+  };
+
+  Store.prototype.each = function(func) {
+    var name, obj, _ref, _results;
+    _ref = this._store;
+    _results = [];
+    for (name in _ref) {
+      obj = _ref[name];
+      _results.push(func(name, obj));
+    }
+    return _results;
+  };
+
+  return Store;
+
+})();
+
+module.exports = Store;
+
 
 },{}],4:[function(_dereq_,module,exports){
-var Store,black,defaults,extend,store,styles,white;Store=_dereq_("./store"),extend=_dereq_("./utils").extend,store=new Store,styles={style:function(e,t){return null==e||null==t?store.list():void store.add(e,t)},stringForStyle:function(e){var t,r,s;return r=store.get(e),function(){var e;e=[];for(t in r)s=r[t],e.push(r.hasOwnProperty(t)?""+t+":"+s+";":void 0);return e}().join("")}},defaults={"border-radius":"2px",padding:"1px 3px",margin:"0 1px"},white={color:"white"},black={color:"black"},styles.style("green",extend({},defaults,white,{background:"green"})),styles.style("purple",extend({},defaults,white,{background:"purple"})),styles.style("orange",extend({},defaults,white,{background:"orange"})),styles.style("red",extend({},defaults,white,{background:"red"})),styles.style("yellow",extend({},defaults,black,{background:"yellow"})),module.exports=styles;
-//# sourceMappingURL=out.js.map
+var Store, black, defaults, extend, store, styles, white;
+
+Store = _dereq_('./store');
+
+extend = _dereq_('./utils').extend;
+
+store = new Store;
+
+styles = {
+  style: function(name, style) {
+    if ((name != null) && (style != null)) {
+      store.add(name, style);
+    } else {
+      return store.list();
+    }
+  },
+  stringForStyle: function(name) {
+    var k, style, v;
+    style = store.get(name);
+    return ((function() {
+      var _results;
+      _results = [];
+      for (k in style) {
+        v = style[k];
+        _results.push(style.hasOwnProperty(k) ? "" + k + ":" + v + ";" : void 0);
+      }
+      return _results;
+    })()).join('');
+  }
+};
+
+defaults = {
+  'border-radius': '2px',
+  'padding': '1px 3px',
+  'margin': '0 1px'
+};
+
+white = {
+  'color': 'white'
+};
+
+black = {
+  'color': 'black'
+};
+
+styles.style('green', extend({}, defaults, white, {
+  'background': 'green'
+}));
+
+styles.style('purple', extend({}, defaults, white, {
+  'background': 'purple'
+}));
+
+styles.style('orange', extend({}, defaults, white, {
+  'background': 'orange'
+}));
+
+styles.style('red', extend({}, defaults, white, {
+  'background': 'red'
+}));
+
+styles.style('yellow', extend({}, defaults, black, {
+  'background': 'yellow'
+}));
+
+module.exports = styles;
+
 
 },{"./store":3,"./utils":5}],5:[function(_dereq_,module,exports){
-var extend,__slice=[].slice;extend=function(){var e,n,t,r,l,s,a;for(n=arguments[0],e=2<=arguments.length?__slice.call(arguments,1):[],s=0,a=e.length;a>s;s++){r=e[s];for(t in r)l=r[t],r.hasOwnProperty(t)&&(n[t]=l)}return n},module.exports={extend:extend};
-//# sourceMappingURL=out.js.map
+var extend,
+  __slice = [].slice;
+
+extend = function() {
+  var args, destObj, key, obj, value, _i, _len;
+  destObj = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
+  for (_i = 0, _len = args.length; _i < _len; _i++) {
+    obj = args[_i];
+    for (key in obj) {
+      value = obj[key];
+      if (obj.hasOwnProperty(key)) {
+        destObj[key] = value;
+      }
+    }
+  }
+  return destObj;
+};
+
+module.exports = {
+  extend: extend
+};
+
 
 },{}]},{},[1])
 (1)

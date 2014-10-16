@@ -1,9 +1,9 @@
 {
   "name": "badgee",
   "author": "Olivier Audard <audard@gmail.com>",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "a browser console improvement",
-  "main": "dist/badgee.min.js",
+  "main": "build/badgee.min.js",
   "repository": {
     "type": "git",
     "url": "git@github.com:dharFr/badgee.git"
@@ -18,7 +18,8 @@
     "test": "test"
   },
   "scripts": {
-    "test": "gulp mocha"
+    "test": "gulp mocha",
+    "start": "gulp"
   },
   "browserify": {
     "transform": [
