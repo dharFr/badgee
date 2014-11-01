@@ -3,7 +3,7 @@
 
 /*! badgee v1.1.0 - MIT license */
 'use strict';
-var Badgee, Store, argsForBadgee, b, concatLabelToOutput, config, currentConf, e, fallback, method, methods, noop, properties, store, styles, unformatableMethods, _defineMethods, _i, _len, _ref,
+var Badgee, Store, argsForBadgee, b, concatLabelToOutput, config, currentConf, e, fallback, filter, method, methods, noop, properties, redefineMethodsForAllBadges, store, styles, unformatableMethods, _defineMethods, _disable, _i, _len, _ref,
   __slice = [].slice;
 
 properties = ['memory'];
@@ -34,6 +34,11 @@ currentConf = config();
 
 store = new Store;
 
+filter = {
+  include: null,
+  exclude: null
+};
+
 concatLabelToOutput = function(out, label, hasStyle) {
   if (out == null) {
     out = '';
@@ -63,39 +68,48 @@ argsForBadgee = function(label, style, parentName) {
   return args;
 };
 
+_disable = function() {
+  var _j, _k, _len1, _len2, _results;
+  for (_j = 0, _len1 = methods.length; _j < _len1; _j++) {
+    method = methods[_j];
+    this[method] = noop;
+  }
+  _results = [];
+  for (_k = 0, _len2 = unformatableMethods.length; _k < _len2; _k++) {
+    method = unformatableMethods[_k];
+    _results.push(this[method] = noop);
+  }
+  return _results;
+};
+
 _defineMethods = function(style, parentName) {
-  var args, prop, _j, _k, _l, _len1, _len2, _len3, _len4, _len5, _m, _n, _ref1, _results, _results1;
+  var args, prop, _j, _k, _l, _len1, _len2, _len3, _ref1, _ref2, _results;
   if (!currentConf.enabled) {
-    for (_j = 0, _len1 = methods.length; _j < _len1; _j++) {
-      method = methods[_j];
-      this[method] = noop;
-    }
-    _results = [];
-    for (_k = 0, _len2 = unformatableMethods.length; _k < _len2; _k++) {
-      method = unformatableMethods[_k];
-      _results.push(this[method] = noop);
-    }
-    return _results;
+    return _disable.bind(this)();
   } else {
     args = argsForBadgee(this.label, style, parentName);
     if (style && args.length > 1) {
       args[0] += '%c';
       args.push('p:a');
     }
-    for (_l = 0, _len3 = methods.length; _l < _len3; _l++) {
-      method = methods[_l];
-      this[method] = (_ref1 = console[method]).bind.apply(_ref1, [console].concat(__slice.call(args)));
+    if (((filter.include != null) && !filter.include.test(args[0])) || ((_ref1 = filter.exclude) != null ? _ref1.test(args[0]) : void 0)) {
+      _disable.bind(this)();
+    } else {
+      for (_j = 0, _len1 = methods.length; _j < _len1; _j++) {
+        method = methods[_j];
+        this[method] = (_ref2 = console[method]).bind.apply(_ref2, [console].concat(__slice.call(args)));
+      }
+      for (_k = 0, _len2 = unformatableMethods.length; _k < _len2; _k++) {
+        method = unformatableMethods[_k];
+        this[method] = console[method].bind(console);
+      }
     }
-    for (_m = 0, _len4 = unformatableMethods.length; _m < _len4; _m++) {
-      method = unformatableMethods[_m];
-      this[method] = console[method].bind(console);
+    _results = [];
+    for (_l = 0, _len3 = properties.length; _l < _len3; _l++) {
+      prop = properties[_l];
+      _results.push(this[prop] = console[prop]);
     }
-    _results1 = [];
-    for (_n = 0, _len5 = properties.length; _n < _len5; _n++) {
-      prop = properties[_n];
-      _results1.push(this[prop] = console[prop]);
-    }
-    return _results1;
+    return _results;
   }
 };
 
@@ -120,6 +134,12 @@ Badgee = (function() {
 
 b = new Badgee;
 
+redefineMethodsForAllBadges = function() {
+  return store.each(function(label, b) {
+    return _defineMethods.bind(b.badgee, b.style, b.parent)();
+  });
+};
+
 b.style = styles.style;
 
 b.defaultStyle = styles.defaults;
@@ -129,12 +149,41 @@ b.get = function(label) {
   return (_ref1 = store.get(label)) != null ? _ref1.badgee : void 0;
 };
 
+b.filter = {
+  none: function() {
+    filter = {
+      include: null,
+      exclude: null
+    };
+    redefineMethodsForAllBadges();
+    return b.filter;
+  },
+  include: function(matcher) {
+    if (matcher == null) {
+      matcher = null;
+    }
+    if (matcher !== filter.include) {
+      filter.include = matcher;
+      redefineMethodsForAllBadges();
+    }
+    return b.filter;
+  },
+  exclude: function(matcher) {
+    if (matcher == null) {
+      matcher = null;
+    }
+    if (matcher !== filter.exclude) {
+      filter.exclude = matcher;
+      redefineMethodsForAllBadges();
+    }
+    return b.filter;
+  }
+};
+
 b.config = function(conf) {
   currentConf = config(conf);
   if (conf) {
-    store.each(function(label, b) {
-      return _defineMethods.bind(b.badgee, b.style, b.parent)();
-    });
+    redefineMethodsForAllBadges();
   }
   return currentConf;
 };
@@ -148,7 +197,8 @@ try {
     return console;
   };
   fallback.style = b.style;
-  b.styleDefaults = b.styleDefaults;
+  fallback.styleDefaults = b.styleDefaults;
+  fallback.filter = b.filter;
   fallback.get = function() {
     return console;
   };
@@ -163,6 +213,7 @@ module.exports = b;
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./config":2,"./store":3,"./styles":4}],2:[function(_dereq_,module,exports){
+'use strict';
 var config, configure, defaults, extend;
 
 extend = _dereq_('./utils').extend;
@@ -185,6 +236,7 @@ module.exports = configure;
 
 
 },{"./utils":5}],3:[function(_dereq_,module,exports){
+'use strict';
 var Store;
 
 Store = (function() {
@@ -234,6 +286,7 @@ module.exports = Store;
 
 
 },{}],4:[function(_dereq_,module,exports){
+'use strict';
 var Store, black, defaults, extend, store, styles;
 
 Store = _dereq_('./store');
@@ -337,6 +390,7 @@ module.exports = styles;
 
 
 },{"./store":3,"./utils":5}],5:[function(_dereq_,module,exports){
+'use strict';
 var extend,
   __slice = [].slice;
 
