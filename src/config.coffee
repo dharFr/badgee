@@ -1,3 +1,5 @@
+'use strict'
+
 extend = require('./utils').extend
 
 # default configuration

@@ -1,4 +1,4 @@
-
+'use strict'
 
 extend = (destObj, args...) ->
   for obj in args
