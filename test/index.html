@@ -144,6 +144,34 @@
         helloBadge.timeEnd('t');
       helloBadge.groupEnd();
     })();
+
+    (function () {
+      var helloBadge      = badgee.get('Hello');
+      var helloWorldBadge = badgee.get('world');
+      var important       = badgee.get('Important');
+      var styledBadge     = badgee.get('Styled');
+
+      badgee.filter.include(/hello/i);
+
+      helloBadge.log('Filter: matches /hello/i : not filtered');
+      helloWorldBadge.log('Filter: matches /hello/i : not filtered');
+      important.log('Filter: matches /hello/i : filtered, won\'t be displayed');
+      styledBadge.log('Filter: matches /hello/i : filtered, won\'t be displayed');
+
+      badgee.filter.exclude(/world/i);
+
+      helloBadge.log('Filter: doesn\'t match /world/i : not filtered');
+      helloWorldBadge.log('Filter: doesn\'t match /world/i : filtered - won\'t be displayed');
+      important.log('Filter: doesn\'t match /world/i : not filtered');
+      styledBadge.log('Filter: doesn\'t match /world/i : not filtered');
+
+      badgee.filter.none();
+
+      helloBadge.log('No more filters : everything is displayed');
+      helloWorldBadge.log('No more filters : everything is displayed');
+      important.log('No more filters : everything is displayed');
+      styledBadge.log('No more filters : everything is displayed');
+    })();
   </script>
 </body>
 </html>

@@ -28,13 +28,16 @@ for method in methods.concat unformatableMethods
   (console[method] = noop if not console[method])
 
 
-
 config = require './config'
 Store  = require './store'
 styles = require './styles'
 
 currentConf = config()
 store       = new Store
+
+filter =
+  include : null
+  exclude : null
 
 # concat foramted label for badges output
 # (i.e. "%cbadge1%cbadge2" with style or "[badge1][badge2] without style")
@@ -59,13 +62,19 @@ argsForBadgee = (label, style, parentName) ->
 
   return args
 
+# Define empty Badgee methods
+# Intended to be called in a 'Badgee' instance context (e.g. with 'bind()')
+_disable = () ->
+  @[method] = noop for method in methods
+  @[method] = noop for method in unformatableMethods
+
+
 # Define Badgee methods form console object
 # Intended to be called in a 'Badgee' instance context (e.g. with 'bind()')
 _defineMethods = (style, parentName) ->
 
   unless currentConf.enabled
-    @[method] = noop for method in methods
-    @[method] = noop for method in unformatableMethods
+    _disable.bind(@)()
   else
     # get arguments to pass to console object
     args = argsForBadgee @label, style, parentName
@@ -77,13 +86,16 @@ _defineMethods = (style, parentName) ->
       args[0] += '%c'
       args.push 'p:a'
 
-    # Define Badgee 'formatable' methods form console object
-    for method in methods
-      @[method] = console[method].bind console, args...
+    if (filter.include? and not filter.include.test args[0]) or filter.exclude?.test args[0]
+      _disable.bind(@)()
+    else
+      # Define Badgee 'formatable' methods form console object
+      for method in methods
+        @[method] = console[method].bind console, args...
 
-    # Define Badgee 'unformatable' methods form console object
-    for method in unformatableMethods
-      @[method] = console[method].bind console
+      # Define Badgee 'unformatable' methods form console object
+      for method in unformatableMethods
+        @[method] = console[method].bind console
 
     # Define Badgee properties from console object
     for prop in properties
@@ -113,16 +125,39 @@ class Badgee
 # Create public Badgee instance
 b = new Badgee
 
+redefineMethodsForAllBadges = ->
+  store.each (label, b) ->
+    _defineMethods.bind(b.badgee, b.style, b.parent)()
+
 # Augment public instance with utility methods
 b.style         = styles.style
 b.defaultStyle  = styles.defaults
 b.get           = (label) -> store.get(label)?.badgee
+b.filter        =
+  none  : () ->
+    filter =
+      include   : null
+      exclude : null
+    redefineMethodsForAllBadges()
+    return b.filter
+
+  include   : (matcher=null) ->
+    if matcher isnt filter.include
+      filter.include   = matcher
+      redefineMethodsForAllBadges()
+    return b.filter
+
+  exclude : (matcher=null) ->
+    if matcher isnt filter.exclude
+      filter.exclude = matcher
+      redefineMethodsForAllBadges()
+    return b.filter
+
 b.config        = (conf) ->
   currentConf = config(conf)
   # when conf is updated, redefine every badgee method
   if conf
-    store.each (label, b) ->
-      _defineMethods.bind(b.badgee, b.style, b.parent)()
+    redefineMethodsForAllBadges()
   return currentConf
 
 # Some browsers don't allow to use bind on console object anyway
@@ -133,7 +168,8 @@ catch e
   fallback = console
   fallback.define = -> console
   fallback.style  = b.style
-  b.styleDefaults = b.styleDefaults
+  fallback.styleDefaults = b.styleDefaults
+  fallback.filter = b.filter
   fallback.get    = -> console
   fallback.config = -> b.config
   b = fallback
