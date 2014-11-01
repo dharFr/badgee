@@ -151,6 +151,8 @@
       var important       = badgee.get('Important');
       var styledBadge     = badgee.get('Styled');
 
+      // Defining a global inclusive filter
+      // => only output logs from loggers that match the filter
       badgee.filter.include(/hello/i);
 
       helloBadge.log('Filter: matches /hello/i : not filtered');
@@ -158,6 +160,8 @@
       important.log('Filter: matches /hello/i : filtered, won\'t be displayed');
       styledBadge.log('Filter: matches /hello/i : filtered, won\'t be displayed');
 
+      // Defining a global exclusive filter
+      // => output every logs except those from loggers that match the filter
       badgee.filter.exclude(/world/i);
 
       helloBadge.log('Filter: doesn\'t match /world/i : not filtered');
@@ -165,6 +169,7 @@
       important.log('Filter: doesn\'t match /world/i : not filtered');
       styledBadge.log('Filter: doesn\'t match /world/i : not filtered');
 
+      // Remove already defined filters
       badgee.filter.none();
 
       helloBadge.log('No more filters : everything is displayed');

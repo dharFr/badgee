@@ -154,6 +154,45 @@ helloBadge.groupCollapsed('Creating a "groupCollapsed"');
 helloBadge.groupEnd();
 ```
 
+### Filtering
+
+badgee allows you to define inclusive and exclusive filters. Those filters are applied globally to every single defined instance.
+Filters are cummulative. You can define both an inclusive and a exclusive filter.
+
+#### Inclusive filter
+
+Defining a global inclusive filter.
+Only outputs logs from loggers that match the defined filter.
+
+```js
+badgee.filter.include(/hello/i);
+
+helloBadge.log('Filter: matches /hello/i : not filtered');
+helloWorldBadge.log('Filter: matches /hello/i : not filtered');
+important.log('Filter: matches /hello/i : filtered, won\'t be displayed');
+styledBadge.log('Filter: matches /hello/i : filtered, won\'t be displayed');
+```
+
+#### Exclusive filter
+
+Defining a global exclusive filter
+Output every logs except those from loggers that match the filter.
+
+```js
+badgee.filter.exclude(/world/i);
+
+helloBadge.log('Filter: doesn\'t match /world/i : not filtered');
+helloWorldBadge.log('Filter: doesn\'t match /world/i : filtered - won\'t be displayed');
+```
+
+#### Cleaning filters
+
+Remove already defined filters.
+
+```js
+badgee.filter.none();
+```
+
 ## API
 
 ### `badgee.config([settings])`
