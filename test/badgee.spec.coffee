@@ -62,7 +62,6 @@ describe 'badgee', ->
 
   describe 'badgee.defaultStyle', ->
 
-
     it 'should be a function', ->
       expect(badgee).itself.to.respondTo 'defaultStyle'
 
@@ -160,6 +159,7 @@ describe 'badgee', ->
       console[method].restore()
       badgee.config defaultConf
 
+
     for method in methods
       do (method) ->
 
@@ -206,7 +206,6 @@ describe 'badgee', ->
 
                 expect(console[method].calledOnce).to.be.true
                 expect(console[method].calledWithExactly "#{[badge1.cName,badge2.cName].join('')}%c", badge1.cSytle, badge2.cSytle, 'p:a', args...).to.be.true
-                console.log '>>>', console[method].getCall(0).args
 
           describe 'when disabled', ->
 
@@ -246,7 +245,6 @@ describe 'badgee', ->
               badge2.instance[method] args...
 
               expect(console[method].called).to.be.false
-
 
     for method in unformatableMethods
       do (method) ->
@@ -332,4 +330,53 @@ describe 'badgee', ->
               badge2.instance[method] args...
 
               expect(console[method].called).to.be.false
+
+  describe 'badgee.filter', ->
+
+    beforeEach ->
+      sinon.spy(console, 'log')
+
+    afterEach ->
+      console.log.restore()
+
+    it 'should include badge2 only ', ->
+      badgee.filter.include /badge2/
+
+      badge1.instance.log 'test'
+      expect(console.log.called).to.be.false
+
+      badge2.instance.log 'test'
+      expect(console.log.called).to.be.true
+
+    it 'should reset include filter', ->
+      badgee.filter.none()
+
+      badge1.instance.log 'test'
+      expect(console.log.called).to.be.true
+
+      badge2.instance.log 'test'
+      expect(console.log.called).to.be.true
+
+    it 'should exclude badge2 ', ->
+      badgee.filter.exclude /badge2/
+
+      badge2.instance.log 'test'
+      expect(console.log.called).to.be.false
+
+      badge1.instance.log 'test'
+      expect(console.log.called).to.be.true
+
+    it 'should reset exclude filter', ->
+      badgee.filter.none()
+
+      badge1.instance.log 'test'
+      expect(console.log.called).to.be.true
+
+      badge2.instance.log 'test'
+      expect(console.log.called).to.be.true
+
+
+
+
+
 
