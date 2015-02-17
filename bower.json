@@ -16,11 +16,7 @@
     ],
     "ignore": [
         "**/.*",
-        "gulp",
         "node_modules",
-        "src",
-        "test",
-        "gulpfile.js",
-        "package.json"
+        "test"
     ]
 }
