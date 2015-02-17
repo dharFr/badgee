@@ -3,7 +3,7 @@
 
 /*! badgee v1.2.0 - MIT license */
 'use strict';
-var Badgee, Store, argsForBadgee, b, concatLabelToOutput, config, currentConf, e, fallback, filter, method, methods, noop, properties, redefineMethodsForAllBadges, store, styles, unformatableMethods, _defineMethods, _disable, _i, _len, _ref,
+var Badgee, Store, argsForBadgee, b, checkConsoleMethods, concatLabelToOutput, config, currentConf, e, fallback, filter, methods, noop, properties, redefineMethodsForAllBadges, store, styles, unformatableMethods, _defineMethods, _disable,
   __slice = [].slice;
 
 properties = ['memory'];
@@ -16,13 +16,26 @@ noop = function() {};
 
 global.console = global.console || {};
 
-_ref = methods.concat(unformatableMethods);
-for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-  method = _ref[_i];
-  if (!console[method]) {
-    console[method] = noop;
+checkConsoleMethods = function(methodList) {
+  var method, ret, _i, _len;
+  ret = [];
+  for (_i = 0, _len = methodList.length; _i < _len; _i++) {
+    method = methodList[_i];
+    if (!console[method]) {
+      console[method] = noop;
+      ret.push(method);
+    } else if (typeof console[method] !== 'function') {
+      properties.push(method);
+    } else {
+      ret.push(method);
+    }
   }
-}
+  return ret;
+};
+
+methods = checkConsoleMethods(methods);
+
+unformatableMethods = checkConsoleMethods(unformatableMethods);
 
 config = _dereq_('./config');
 
@@ -69,21 +82,21 @@ argsForBadgee = function(label, style, parentName) {
 };
 
 _disable = function() {
-  var _j, _k, _len1, _len2, _results;
-  for (_j = 0, _len1 = methods.length; _j < _len1; _j++) {
-    method = methods[_j];
+  var method, _i, _j, _len, _len1, _results;
+  for (_i = 0, _len = methods.length; _i < _len; _i++) {
+    method = methods[_i];
     this[method] = noop;
   }
   _results = [];
-  for (_k = 0, _len2 = unformatableMethods.length; _k < _len2; _k++) {
-    method = unformatableMethods[_k];
+  for (_j = 0, _len1 = unformatableMethods.length; _j < _len1; _j++) {
+    method = unformatableMethods[_j];
     _results.push(this[method] = noop);
   }
   return _results;
 };
 
 _defineMethods = function(style, parentName) {
-  var args, prop, _j, _k, _l, _len1, _len2, _len3, _ref1, _ref2, _results;
+  var args, method, prop, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _results;
   if (!currentConf.enabled) {
     return _disable.bind(this)();
   } else {
@@ -92,21 +105,21 @@ _defineMethods = function(style, parentName) {
       args[0] += '%c';
       args.push('p:a');
     }
-    if (((filter.include != null) && !filter.include.test(args[0])) || ((_ref1 = filter.exclude) != null ? _ref1.test(args[0]) : void 0)) {
+    if (((filter.include != null) && !filter.include.test(args[0])) || ((_ref = filter.exclude) != null ? _ref.test(args[0]) : void 0)) {
       _disable.bind(this)();
     } else {
-      for (_j = 0, _len1 = methods.length; _j < _len1; _j++) {
-        method = methods[_j];
-        this[method] = (_ref2 = console[method]).bind.apply(_ref2, [console].concat(__slice.call(args)));
+      for (_i = 0, _len = methods.length; _i < _len; _i++) {
+        method = methods[_i];
+        this[method] = (_ref1 = console[method]).bind.apply(_ref1, [console].concat(__slice.call(args)));
       }
-      for (_k = 0, _len2 = unformatableMethods.length; _k < _len2; _k++) {
-        method = unformatableMethods[_k];
+      for (_j = 0, _len1 = unformatableMethods.length; _j < _len1; _j++) {
+        method = unformatableMethods[_j];
         this[method] = console[method].bind(console);
       }
     }
     _results = [];
-    for (_l = 0, _len3 = properties.length; _l < _len3; _l++) {
-      prop = properties[_l];
+    for (_k = 0, _len2 = properties.length; _k < _len2; _k++) {
+      prop = properties[_k];
       _results.push(this[prop] = console[prop]);
     }
     return _results;
@@ -145,8 +158,8 @@ b.style = styles.style;
 b.defaultStyle = styles.defaults;
 
 b.get = function(label) {
-  var _ref1;
-  return (_ref1 = store.get(label)) != null ? _ref1.badgee : void 0;
+  var _ref;
+  return (_ref = store.get(label)) != null ? _ref.badgee : void 0;
 };
 
 b.filter = {
