@@ -24,8 +24,26 @@ noop = ->
 # Add compat console object if not available
 global.console = (global.console or {})
 
-for method in methods.concat unformatableMethods
-  (console[method] = noop if not console[method])
+# Standardization of the console API on different browsers
+#  - some methods might not be defined. fake them with `noop` function
+#  - some "methods" might not be functions but properties (eg. profile & profileEnd in IE11)
+checkConsoleMethods = (methodList) ->
+
+  ret = []
+  for method in methodList
+    if not console[method]
+      console[method] = noop
+      ret.push method
+    else if typeof console[method] isnt 'function'
+      properties.push method
+    else
+      ret.push method
+
+  return ret
+
+methods             = checkConsoleMethods methods
+unformatableMethods = checkConsoleMethods unformatableMethods
+
 
 
 config = require './config'
