@@ -18,8 +18,18 @@
     "test": "test"
   },
   "scripts": {
-    "test": "gulp mocha",
-    "start": "gulp"
+    "start": "npm run dev",
+    "test": "mocha -R spec --compilers coffee:coffee-script/register test/",
+    "prebuild": "npm run clean && coffeelint src/",
+    "build": "browserify -s badgee --extension .coffee src/badgee.coffee -o build/badgee.js",
+    "watch": "watchify --debug -s badgee --extension .coffee src/badgee.coffee -o build/badgee.js",
+    "postbuild": "npm run minify & npm run test",
+    "clean": "rm -rf build/*",
+    "minify": "uglifyjs build/badgee.js > build/badgee.min.js",
+    "serve": "http-server -p 8000 .",
+    "open": "opener http://localhost:8000/test/",
+    "live-reload": "live-reload --port 8001 build/",
+    "dev": "npm run open -s & parallelshell 'npm run live-reload -s' 'npm run serve -s' 'npm run watch -s'"
   },
   "browserify": {
     "transform": [
@@ -27,23 +37,21 @@
     ]
   },
   "devDependencies": {
-    "browserify": "^4.2.0",
-    "chai": "^1.9.1",
-    "coffee-script": "^1.7.1",
-    "coffeeify": "^0.6.0",
-    "del": "^0.1.1",
-    "event-stream": "^3.1.7",
-    "gulp": "^3.8.6",
-    "gulp-mocha": "^0.5.1",
-    "gulp-notify": "^1.4.0",
-    "gulp-streamify": "0.0.5",
-    "gulp-uglify": "^1.0.1",
-    "gulp-util": "^3.0.0",
-    "gulp-webserver": "^0.3.4",
+    "http-server": "^0.7.4",
+    "live-reload": "^0.2.0",
+    "opener": "^1.4.0",
+    "parallelshell": "^1.0.4",
     "pretty-hrtime": "^0.2.1",
     "sinon": "^1.10.3",
-    "uglifyify": "^2.5.0",
-    "vinyl-source-stream": "^0.1.1",
-    "watchify": "^0.10.2"
+    "watchify": "^2.3.0"
+  },
+  "dependencies": {
+    "browserify": "^4.2.0",
+    "chai": "^1.9.1",
+    "coffee-script": "^1.9.1",
+    "coffeeify": "^0.6.0",
+    "coffeelint": "^1.8.1",
+    "mocha": "^2.1.0",
+    "uglify-js": "^2.4.16"
   }
 }
