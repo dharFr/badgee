@@ -14,9 +14,9 @@ methods = [
   'groupCollapsed', 'info', 'log', 'warn'
 ]
 unformatableMethods = [
-  'assert', 'clear', 'count', 'dir', 'exception', 'groupEnd', 'markTimeline', 'profile',
-  'profileEnd', 'table', 'trace', 'time', 'timeEnd', 'timeStamp', 'timeline',
-  'timelineEnd'
+  'assert', 'clear', 'count', 'dir', 'exception', 'groupEnd', 'markTimeline',
+  'profile', 'profileEnd', 'table', 'trace', 'time', 'timeEnd', 'timeStamp',
+  'timeline', 'timelineEnd'
 ]
 
 noop = ->
@@ -26,7 +26,8 @@ global.console = (global.console or {})
 
 # Standardization of the console API on different browsers
 #  - some methods might not be defined. fake them with `noop` function
-#  - some "methods" might not be functions but properties (eg. profile & profileEnd in IE11)
+#  - some "methods" might not be functions but properties (eg. profile &
+#    profileEnd in IE11)
 checkConsoleMethods = (methodList) ->
 
   ret = []
@@ -60,7 +61,11 @@ filter =
 # concat foramted label for badges output
 # (i.e. "%cbadge1%cbadge2" with style or "[badge1][badge2] without style")
 concatLabelToOutput = (out='', label, hasStyle=no)->
-  "#{out}#{if hasStyle then '%c' else '['}#{label}#{unless hasStyle then ']' else ''}"
+  "#{out}#{
+    if hasStyle then '%c' else '['
+  }#{label}#{
+    unless hasStyle then ']' else ''
+  }"
 
 # Given a label, style and parentName, generate the full list of arguments to
 # pass to console method to get a foramted output
@@ -104,7 +109,9 @@ _defineMethods = (style, parentName) ->
       args[0] += '%c'
       args.push 'p:a'
 
-    if (filter.include? and not filter.include.test args[0]) or filter.exclude?.test args[0]
+    isntInclusive = filter.include? and not filter.include.test args[0]
+    isExclusive   = filter.exclude?.test args[0]
+    if isntInclusive or isExclusive
       _disable.bind(@)()
     else
       # Define Badgee 'formatable' methods form console object
