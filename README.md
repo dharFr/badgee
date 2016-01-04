@@ -6,14 +6,15 @@ A browser console improvement
 
 ## What is `badgee`?
 
-It's an add-on to the browser console, created to improve readability and flexibility. It provides the same API than your brower console, adding a few extra features.
+It's an add-on to the browser console, created to improve readability and flexibility. 
+It provides the same API than your brower console, adding a few extra features.
 
 ![overview](http://www.dhar.fr/assets/badgee/complete.png)
 
-## Install with Bower
+## Install with NPM
 
 ```
-bower install badgee
+npm install --save badgee
 ```
 
 ## Compatibility
@@ -22,7 +23,8 @@ Work pretty well in Chrome, Firefox Web Console or Firebug and Safari desktop.
 
 ## Overview
 
-`badgee` is superset of the 'console' object. You can start using it without configuration as you usually do with 'console' object.
+`badgee` is superset of the 'console' object. 
+You can start using it without configuration as you usually do with 'console' object.
 
 ```js
 badgee.log('Configuring badgee...');
