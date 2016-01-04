@@ -22,7 +22,7 @@ unformatableMethods = [
 noop = ->
 
 # Add compat console object if not available
-global.console = (global.console or {})
+this.console = (this.console or {})
 
 # Standardization of the console API on different browsers
 #  - some methods might not be defined. fake them with `noop` function

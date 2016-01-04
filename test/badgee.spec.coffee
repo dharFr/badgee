@@ -1,6 +1,6 @@
 chai   = require 'chai'
 sinon  = require 'sinon'
-badgee = require '../build/badgee.js'
+badgee = require '../src/badgee'
 
 expect = chai.expect
 
