@@ -96,7 +96,7 @@ _disable = function() {
 };
 
 _defineMethods = function(style, parentName) {
-  var args, method, prop, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _results;
+  var args, isExclusive, isntInclusive, method, prop, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _results;
   if (!currentConf.enabled) {
     return _disable.bind(this)();
   } else {
@@ -105,7 +105,9 @@ _defineMethods = function(style, parentName) {
       args[0] += '%c';
       args.push('p:a');
     }
-    if (((filter.include != null) && !filter.include.test(args[0])) || ((_ref = filter.exclude) != null ? _ref.test(args[0]) : void 0)) {
+    isntInclusive = (filter.include != null) && !filter.include.test(args[0]);
+    isExclusive = (_ref = filter.exclude) != null ? _ref.test(args[0]) : void 0;
+    if (isntInclusive || isExclusive) {
       _disable.bind(this)();
     } else {
       for (_i = 0, _len = methods.length; _i < _len; _i++) {
