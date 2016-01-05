@@ -8,12 +8,7 @@
     "type": "git",
     "url": "git@github.com:dharFr/badgee.git"
   },
-  "license": [
-    {
-      "type": "MIT",
-      "url": "https://github.com/dharFr/badgee/raw/master/LICENSE"
-    }
-  ],
+  "license": "MIT",
   "directories": {
     "test": "test"
   },
