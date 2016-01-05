@@ -1,10 +1,9 @@
-!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.badgee=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
-(function (global){
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.badgee = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 
 /*! badgee v1.2.0 - MIT license */
 'use strict';
-var Badgee, Store, argsForBadgee, b, checkConsoleMethods, concatLabelToOutput, config, currentConf, e, fallback, filter, methods, noop, properties, redefineMethodsForAllBadges, store, styles, unformatableMethods, _defineMethods, _disable,
-  __slice = [].slice;
+var Badgee, Store, _defineMethods, _disable, argsForBadgee, b, checkConsoleMethods, concatLabelToOutput, config, currentConf, e, error, fallback, filter, methods, noop, properties, redefineMethodsForAllBadges, store, styles, unformatableMethods,
+  slice = [].slice;
 
 properties = ['memory'];
 
@@ -14,13 +13,13 @@ unformatableMethods = ['assert', 'clear', 'count', 'dir', 'exception', 'groupEnd
 
 noop = function() {};
 
-global.console = global.console || {};
+this.console = this.console || {};
 
 checkConsoleMethods = function(methodList) {
-  var method, ret, _i, _len;
+  var i, len, method, ret;
   ret = [];
-  for (_i = 0, _len = methodList.length; _i < _len; _i++) {
-    method = methodList[_i];
+  for (i = 0, len = methodList.length; i < len; i++) {
+    method = methodList[i];
     if (!console[method]) {
       console[method] = noop;
       ret.push(method);
@@ -37,11 +36,11 @@ methods = checkConsoleMethods(methods);
 
 unformatableMethods = checkConsoleMethods(unformatableMethods);
 
-config = _dereq_('./config');
+config = require('./config');
 
-Store = _dereq_('./store');
+Store = require('./store');
 
-styles = _dereq_('./styles');
+styles = require('./styles');
 
 currentConf = config();
 
@@ -82,21 +81,21 @@ argsForBadgee = function(label, style, parentName) {
 };
 
 _disable = function() {
-  var method, _i, _j, _len, _len1, _results;
-  for (_i = 0, _len = methods.length; _i < _len; _i++) {
-    method = methods[_i];
+  var i, j, len, len1, method, results;
+  for (i = 0, len = methods.length; i < len; i++) {
+    method = methods[i];
     this[method] = noop;
   }
-  _results = [];
-  for (_j = 0, _len1 = unformatableMethods.length; _j < _len1; _j++) {
-    method = unformatableMethods[_j];
-    _results.push(this[method] = noop);
+  results = [];
+  for (j = 0, len1 = unformatableMethods.length; j < len1; j++) {
+    method = unformatableMethods[j];
+    results.push(this[method] = noop);
   }
-  return _results;
+  return results;
 };
 
 _defineMethods = function(style, parentName) {
-  var args, isExclusive, isntInclusive, method, prop, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _results;
+  var args, i, isExclusive, isntInclusive, j, k, len, len1, len2, method, prop, ref, ref1, results;
   if (!currentConf.enabled) {
     return _disable.bind(this)();
   } else {
@@ -106,31 +105,31 @@ _defineMethods = function(style, parentName) {
       args.push('p:a');
     }
     isntInclusive = (filter.include != null) && !filter.include.test(args[0]);
-    isExclusive = (_ref = filter.exclude) != null ? _ref.test(args[0]) : void 0;
+    isExclusive = (ref = filter.exclude) != null ? ref.test(args[0]) : void 0;
     if (isntInclusive || isExclusive) {
       _disable.bind(this)();
     } else {
-      for (_i = 0, _len = methods.length; _i < _len; _i++) {
-        method = methods[_i];
-        this[method] = (_ref1 = console[method]).bind.apply(_ref1, [console].concat(__slice.call(args)));
+      for (i = 0, len = methods.length; i < len; i++) {
+        method = methods[i];
+        this[method] = (ref1 = console[method]).bind.apply(ref1, [console].concat(slice.call(args)));
       }
-      for (_j = 0, _len1 = unformatableMethods.length; _j < _len1; _j++) {
-        method = unformatableMethods[_j];
+      for (j = 0, len1 = unformatableMethods.length; j < len1; j++) {
+        method = unformatableMethods[j];
         this[method] = console[method].bind(console);
       }
     }
-    _results = [];
-    for (_k = 0, _len2 = properties.length; _k < _len2; _k++) {
-      prop = properties[_k];
-      _results.push(this[prop] = console[prop]);
+    results = [];
+    for (k = 0, len2 = properties.length; k < len2; k++) {
+      prop = properties[k];
+      results.push(this[prop] = console[prop]);
     }
-    return _results;
+    return results;
   }
 };
 
 Badgee = (function() {
-  function Badgee(label, style, parentName) {
-    this.label = label;
+  function Badgee(label1, style, parentName) {
+    this.label = label1;
     _defineMethods.bind(this, style, parentName)();
     store.add(this.label, {
       badgee: this,
@@ -160,8 +159,8 @@ b.style = styles.style;
 b.defaultStyle = styles.defaults;
 
 b.get = function(label) {
-  var _ref;
-  return (_ref = store.get(label)) != null ? _ref.badgee : void 0;
+  var ref;
+  return (ref = store.get(label)) != null ? ref.badgee : void 0;
 };
 
 b.filter = {
@@ -205,8 +204,8 @@ b.config = function(conf) {
 
 try {
   b.log();
-} catch (_error) {
-  e = _error;
+} catch (error) {
+  e = error;
   fallback = console;
   fallback.define = function() {
     return console;
@@ -226,12 +225,11 @@ try {
 module.exports = b;
 
 
-}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./config":2,"./store":3,"./styles":4}],2:[function(_dereq_,module,exports){
+},{"./config":2,"./store":3,"./styles":4}],2:[function(require,module,exports){
 'use strict';
 var config, configure, defaults, extend;
 
-extend = _dereq_('./utils').extend;
+extend = require('./utils').extend;
 
 defaults = {
   enabled: true,
@@ -250,7 +248,7 @@ configure = function(conf) {
 module.exports = configure;
 
 
-},{"./utils":5}],3:[function(_dereq_,module,exports){
+},{"./utils":5}],3:[function(require,module,exports){
 'use strict';
 var Store;
 
@@ -272,25 +270,25 @@ Store = (function() {
   };
 
   Store.prototype.list = function() {
-    var name, obj, _ref, _results;
-    _ref = this._store;
-    _results = [];
-    for (name in _ref) {
-      obj = _ref[name];
-      _results.push(name);
+    var name, obj, ref, results;
+    ref = this._store;
+    results = [];
+    for (name in ref) {
+      obj = ref[name];
+      results.push(name);
     }
-    return _results;
+    return results;
   };
 
   Store.prototype.each = function(func) {
-    var name, obj, _ref, _results;
-    _ref = this._store;
-    _results = [];
-    for (name in _ref) {
-      obj = _ref[name];
-      _results.push(func(name, obj));
+    var name, obj, ref, results;
+    ref = this._store;
+    results = [];
+    for (name in ref) {
+      obj = ref[name];
+      results.push(func(name, obj));
     }
-    return _results;
+    return results;
   };
 
   return Store;
@@ -300,13 +298,13 @@ Store = (function() {
 module.exports = Store;
 
 
-},{}],4:[function(_dereq_,module,exports){
+},{}],4:[function(require,module,exports){
 'use strict';
 var Store, black, defaults, extend, store, styles;
 
-Store = _dereq_('./store');
+Store = require('./store');
 
-extend = _dereq_('./utils').extend;
+extend = require('./utils').extend;
 
 store = new Store;
 
@@ -338,13 +336,13 @@ styles = {
     var k, style, v;
     style = store.get(name);
     return ((function() {
-      var _results;
-      _results = [];
+      var results;
+      results = [];
       for (k in style) {
         v = style[k];
-        _results.push(style.hasOwnProperty(k) ? "" + k + ":" + v + ";" : void 0);
+        results.push(style.hasOwnProperty(k) ? k + ":" + v + ";" : void 0);
       }
-      return _results;
+      return results;
     })()).join('');
   }
 };
@@ -404,16 +402,16 @@ styles.style('yellow', extend({}, black, {
 module.exports = styles;
 
 
-},{"./store":3,"./utils":5}],5:[function(_dereq_,module,exports){
+},{"./store":3,"./utils":5}],5:[function(require,module,exports){
 'use strict';
 var extend,
-  __slice = [].slice;
+  slice = [].slice;
 
 extend = function() {
-  var args, destObj, key, obj, value, _i, _len;
-  destObj = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
-  for (_i = 0, _len = args.length; _i < _len; _i++) {
-    obj = args[_i];
+  var args, destObj, i, key, len, obj, value;
+  destObj = arguments[0], args = 2 <= arguments.length ? slice.call(arguments, 1) : [];
+  for (i = 0, len = args.length; i < len; i++) {
+    obj = args[i];
     for (key in obj) {
       value = obj[key];
       if (obj.hasOwnProperty(key)) {
@@ -429,6 +427,5 @@ module.exports = {
 };
 
 
-},{}]},{},[1])
-(1)
+},{}]},{},[1])(1)
 });
