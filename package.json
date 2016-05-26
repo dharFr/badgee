@@ -42,7 +42,7 @@
     "coffeelint": "^1.14.2",
     "http-server": "^0.9.0",
     "live-reload": "^1.1.0",
-    "mocha": "^2.3.4",
+    "mocha": "^2.5.3",
     "opener": "^1.4.1",
     "parallelshell": "^2.0.0",
     "sinon": "^1.17.2",
