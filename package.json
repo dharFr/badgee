@@ -45,7 +45,7 @@
     "mocha": "^3.0.2",
     "opener": "^1.4.1",
     "parallelshell": "^2.0.0",
-    "sinon": "^1.17.2",
+    "sinon": "^2.0.0",
     "uglify-js": "^2.6.1",
     "watchify": "^3.6.1"
   },
