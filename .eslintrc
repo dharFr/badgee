@@ -1,0 +1,25 @@
+{
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "ecmaFeatures": {
+      "experimentalObjectRestSpread": true,
+    },
+    "sourceType": "module"
+  },
+  "env": {
+    "browser": true,
+    "mocha": true,
+    "node": true,
+    "es6": true
+  },
+  "root" : true,
+  "extends": "eslint:recommended",
+  "rules": {
+    "prefer-const"       : ["error"],
+    "prefer-rest-params" : ["error"],
+    "prefer-spread"      : ["error"],
+    "indent"             : ["error", 2, { "SwitchCase": 1 }],
+    "linebreak-style"    : ["error", "unix"],
+    "eol-last"           : ["error", "unix"],
+  }
+}
