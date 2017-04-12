@@ -1,21 +1,28 @@
-'use strict'
+class Store {
+  constructor() {
+    this._store = {};
+  }
 
-class Store
-  constructor: ->
-    @_store = {}
+  // Add object to store
+  add(name, obj) {
+    this._store[name] = obj;
+  }
 
-  # Add object to store
-  add: (name, obj) ->
-    @_store[name] = obj
+  // get obj from store
+  get(name) {
+    return this._store[name] || null
+  }
 
-  # get obj from store
-  get: (name) ->
-    if @_store[name] then @_store[name] else null
+  list() {
+    return Object.keys(this._store);
+  }
 
-  list: () ->
-    name for name, obj of @_store
+  each(func) {
+    for (const name in this._store) {
+      const obj = this._store[name];
+      func(name, obj);
+    }
+  }
+}
 
-  each: (func) ->
-    func(name, obj) for name, obj of @_store
-
-module.exports = Store
+export default Store;
