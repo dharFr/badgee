@@ -1,20 +1,21 @@
-'use strict'
+import { extend } from './utils';
 
-extend = require('./utils').extend
+// default configuration
+const defaults = {
+  enabled : true,
+  styled  :  true
+};
 
-# default configuration
-defaults =
-  enabled: yes
-  styled:  yes
+let config = extend({}, defaults);
 
-config = extend {}, defaults
+const configure = function(conf) {
+  // update conf
+  if (typeof conf === 'object') {
+    config = extend({}, defaults, conf);
+  }
 
-configure = (conf) ->
-  # update conf
-  if typeof conf is 'object'
-    config = extend {}, defaults, conf
+  // return current conf
+  return config;
+};
 
-  # return current conf
-  return config
-
-module.exports = configure
+export default configure
