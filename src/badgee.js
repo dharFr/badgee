@@ -1,203 +1,247 @@
-###! badgee v1.2.0 - MIT license ###
-'use strict'
+/* eslint-disable no-console */
+/*! badgee v1.2.0 - MIT license */
 
-# For the record, every single console methods and properties
-# ["memory", "exception", "debug", "error", "info", "log", "warn", "dir",
-# "dirxml", "table", "trace", "assert", "count", "markTimeline", "profile",
-# "profileEnd", "time", "timeEnd", "timeStamp", "timeline", "timelineEnd",
-# "group", "groupCollapsed", "groupEnd", "clear"]
-properties = [
+// For the record, every single console methods and properties
+// ["memory", "exception", "debug", "error", "info", "log", "warn", "dir",
+// "dirxml", "table", "trace", "assert", "count", "markTimeline", "profile",
+// "profileEnd", "time", "timeEnd", "timeStamp", "timeline", "timelineEnd",
+// "group", "groupCollapsed", "groupEnd", "clear"]
+const properties = [
   'memory'
-]
-methods = [
+];
+let methods = [
   'debug', 'dirxml', 'error', 'group',
   'groupCollapsed', 'info', 'log', 'warn'
-]
-unformatableMethods = [
+];
+let unformatableMethods = [
   'assert', 'clear', 'count', 'dir', 'exception', 'groupEnd', 'markTimeline',
   'profile', 'profileEnd', 'table', 'trace', 'time', 'timeEnd', 'timeStamp',
   'timeline', 'timelineEnd'
-]
+];
 
-noop = ->
+const noop = () => {};
 
-# Add compat console object if not available
-@console = @console or {}
+// Add compat console object if not available
+export const console = window.console || {};
 
-# Standardization of the console API on different browsers
-#  - some methods might not be defined. fake them with `noop` function
-#  - some "methods" might not be functions but properties (eg. profile &
-#    profileEnd in IE11)
-checkConsoleMethods = (methodList) ->
+// Standardization of the console API on different browsers
+//  - some methods might not be defined. fake them with `noop` function
+//  - some "methods" might not be functions but properties (eg. profile &
+//    profileEnd in IE11)
+const checkConsoleMethods = function(methodList) {
+  const ret = [];
+  for (const i in methodList) {
+    const method = methodList[i]
+    if (!console[method]) {
+      console[method] = noop;
+      ret.push(method);
+    } else if (typeof console[method] !== 'function') {
+      properties.push(method);
+    } else {
+      ret.push(method);
+    }
+  }
+  return ret;
+};
 
-  ret = []
-  for method in methodList
-    if not console[method]
-      console[method] = noop
-      ret.push method
-    else if typeof console[method] isnt 'function'
-      properties.push method
-    else
-      ret.push method
-
-  return ret
-
-methods             = checkConsoleMethods methods
-unformatableMethods = checkConsoleMethods unformatableMethods
+methods             = checkConsoleMethods(methods);
+unformatableMethods = checkConsoleMethods(unformatableMethods);
 
 
 
-config = require './config'
-Store  = require './store'
-styles = require './styles'
+import config from './config';
+import Store from './store';
+import styles from './styles';
 
-currentConf = config()
-store       = new Store
+let currentConf = config();
+const store     = new Store;
 
-filter =
-  include : null
+let filter = {
+  include : null,
   exclude : null
+};
 
-# concat foramted label for badges output
-# (i.e. "%cbadge1%cbadge2" with style or "[badge1][badge2] without style")
-concatLabelToOutput = (out='', label, hasStyle=no)->
-  "#{out}#{
-    if hasStyle then '%c' else '['
-  }#{label}#{
-    unless hasStyle then ']' else ''
-  }"
+// concat foramted label for badges output
+// (i.e. "%cbadge1%cbadge2" with style or "[badge1][badge2] without style")
+const concatLabelToOutput = function(out, label, hasStyle){
+  if (out == null) { out = ''; }
+  if (hasStyle == null) { hasStyle = false; }
+  return `${out}${
+    hasStyle ? '%c' : '['
+  }${label}${
+    !hasStyle ? ']' : ''
+  }`;
+};
 
-# Given a label, style and parentName, generate the full list of arguments to
-# pass to console method to get a foramted output
-argsForBadgee = (label, style, parentName) ->
-  args = []
+// Given a label, style and parentName, generate the full list of arguments to
+// pass to console method to get a foramted output
+var argsForBadgee = function(label, style, parentName) {
+  let args = [];
 
-  style = no unless currentConf.styled
-  if parentName
-    parent = store.get parentName
-    args = argsForBadgee(parent.badgee.label, parent.style, parent.parent)
+  if (!currentConf.styled) { style = false; }
+  if (parentName) {
+    const parent = store.get(parentName);
+    args = argsForBadgee(parent.badgee.label, parent.style, parent.parent);
+  }
 
-  if label
-    args[0] = concatLabelToOutput args[0], label, !!style
+  if (label) {
+    args[0] = concatLabelToOutput(args[0], label, !!style);
+  }
 
-  if style
-    args.push styles.stringForStyle style
+  if (style) {
+    args.push(styles.stringForStyle(style));
+  }
 
-  return args
+  return args;
+};
 
-# Define empty Badgee methods
-# Intended to be called in a 'Badgee' instance context (e.g. with 'bind()')
-_disable = () ->
-  @[method] = noop for method in methods
-  @[method] = noop for method in unformatableMethods
+// Define empty Badgee methods
+// Intended to be called in a 'Badgee' instance context (e.g. with 'bind()')
+const _disable = function() {
+  for (const i in methods) {
+    const method = methods[i]
+    this[method] = noop;
+  }
+  for (const i in unformatableMethods) {
+    const method = unformatableMethods[i];
+    this[method] = noop;
+  }
+};
 
 
-# Define Badgee methods form console object
-# Intended to be called in a 'Badgee' instance context (e.g. with 'bind()')
-_defineMethods = (style, parentName) ->
+// Define Badgee methods form console object
+// Intended to be called in a 'Badgee' instance context (e.g. with 'bind()')
+const _defineMethods = function(style, parentName) {
 
-  unless currentConf.enabled
-    _disable.bind(@)()
-  else
-    # get arguments to pass to console object
-    args = argsForBadgee @label, style, parentName
+  if (!currentConf.enabled) {
+    return _disable.bind(this)();
+  } else {
+    // get arguments to pass to console object
+    const args = argsForBadgee(this.label, style, parentName);
 
-    # Reset style for FF :
-    # Defining a last style to an unknown property seems to reset to the default
-    # behavior on FF
-    if style and args.length > 1
-      args[0] += '%c'
-      args.push 'p:a'
-
-    isntInclusive = filter.include? and not filter.include.test args[0]
-    isExclusive   = filter.exclude?.test args[0]
-    if isntInclusive or isExclusive
-      _disable.bind(@)()
-    else
-      # Define Badgee 'formatable' methods form console object
-      for method in methods
-        @[method] = console[method].bind console, args...
-
-      # Define Badgee 'unformatable' methods form console object
-      for method in unformatableMethods
-        @[method] = console[method].bind console
-
-    # Define Badgee properties from console object
-    for prop in properties
-      @[prop] = console[prop]
-
-# ==================================
-
-class Badgee
-
-  constructor: (@label, style, parentName) ->
-    # Define Badgee methods form console object
-    _defineMethods.bind(@, style, parentName)()
-
-    # Store instance for later reference
-    store.add @label, {
-      badgee: @,
-      style: style,
-      parent: parentName
+    // Reset style for FF :
+    // Defining a last style to an unknown property seems to reset to the default
+    // behavior on FF
+    if (style && (args.length > 1)) {
+      args[0] += '%c';
+      args.push('p:a');
     }
 
-  # Defines a new Badgee instance with @ as parent Badge
-  define: (label, style) ->
-    return new Badgee label, style, @label
+    const isntInclusive = (filter.include != null) && !filter.include.test(args[0]);
+    const isExclusive   = filter.exclude != null ? filter.exclude.test(args[0]) : undefined;
+    if (isntInclusive || isExclusive) {
+      _disable.bind(this)();
+    } else {
+      // Define Badgee 'formatable' methods form console object
+      for (const i in methods) {
+        const method = methods[i]
+        this[method] = console[method].bind(console, ...Array.from(args));
+      }
 
-# ==================================
+      // Define Badgee 'unformatable' methods form console object
+      for (const i in unformatableMethods) {
+        const method = unformatableMethods[i];
+        this[method] = console[method].bind(console);
+      }
+    }
 
-# Create public Badgee instance
-b = new Badgee
+    // Define Badgee properties from console object
+    return properties.map((prop) => (this[prop] = console[prop]));
+  }
+};
 
-redefineMethodsForAllBadges = ->
-  store.each (label, b) ->
-    _defineMethods.bind(b.badgee, b.style, b.parent)()
+// ==================================
 
-# Augment public instance with utility methods
-b.style         = styles.style
-b.defaultStyle  = styles.defaults
-b.get           = (label) -> store.get(label)?.badgee
-b.filter        =
-  none  : () ->
-    filter =
-      include   : null
+class Badgee {
+
+  constructor(label, style, parentName) {
+    // Define Badgee methods form console object
+    this.label = label;
+    _defineMethods.bind(this, style, parentName)();
+
+    // Store instance for later reference
+    store.add(this.label, {
+      badgee: this,
+      style,
+      parent: parentName
+    });
+  }
+
+  // Defines a new Badgee instance with @ as parent Badge
+  define(label, style) {
+    return new Badgee(label, style, this.label);
+  }
+}
+
+// ==================================
+
+// Create public Badgee instance
+let b = new Badgee;
+
+const redefineMethodsForAllBadges = () =>
+  store.each((label, b) => _defineMethods.bind(b.badgee, b.style, b.parent)())
+;
+
+// Augment public instance with utility methods
+b.style         = styles.style;
+b.defaultStyle  = styles.defaults;
+b.get           = label => __guard__(store.get(label), x => x.badgee);
+b.filter        = {
+  none() {
+    filter = {
+      include   : null,
       exclude : null
-    redefineMethodsForAllBadges()
-    return b.filter
+    };
+    redefineMethodsForAllBadges();
+    return b.filter;
+  },
 
-  include   : (matcher=null) ->
-    if matcher isnt filter.include
-      filter.include   = matcher
-      redefineMethodsForAllBadges()
-    return b.filter
+  include(matcher) {
+    if (matcher == null) { matcher = null; }
+    if (matcher !== filter.include) {
+      filter.include   = matcher;
+      redefineMethodsForAllBadges();
+    }
+    return b.filter;
+  },
 
-  exclude : (matcher=null) ->
-    if matcher isnt filter.exclude
-      filter.exclude = matcher
-      redefineMethodsForAllBadges()
-    return b.filter
+  exclude(matcher) {
+    if (matcher == null) { matcher = null; }
+    if (matcher !== filter.exclude) {
+      filter.exclude = matcher;
+      redefineMethodsForAllBadges();
+    }
+    return b.filter;
+  }
+};
 
-b.config        = (conf) ->
-  currentConf = config(conf)
-  # when conf is updated, redefine every badgee method
-  if conf
-    redefineMethodsForAllBadges()
-  return currentConf
+b.config      = function(conf) {
+  currentConf = config(conf);
+  // when conf is updated, redefine every badgee method
+  if (conf) {
+    redefineMethodsForAllBadges();
+  }
+  return currentConf;
+};
 
-# Some browsers don't allow to use bind on console object anyway
-# fallback to default if needed
-try
-  b.log()
-catch e
-  fallback = console
-  fallback.define = -> console
-  fallback.style  = b.style
-  fallback.styleDefaults = b.styleDefaults
-  fallback.filter = b.filter
-  fallback.get    = -> console
-  fallback.config = -> b.config
-  b = fallback
+// Some browsers don't allow to use bind on console object anyway
+// fallback to default if needed
+try {
+  b.log();
+} catch (e) {
+  const fallback = console;
+  fallback.define = () => console;
+  fallback.style  = b.style;
+  fallback.styleDefaults = b.styleDefaults;
+  fallback.filter = b.filter;
+  fallback.get    = () => console;
+  fallback.config = () => b.config;
+  b = fallback;
+}
 
-module.exports = b
+export default b;
 
+
+function __guard__(value, transform) {
+  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+}
