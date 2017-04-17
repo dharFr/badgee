@@ -5,7 +5,7 @@ import { extend } from './utils';
 const store = new Store;
 
 // Default properties for styles
-let defaults = {
+let defaultsStyle = {
   'border-radius': '2px',
   'padding'      : '1px 3px',
   'margin'       : '0 1px',
@@ -16,7 +16,7 @@ const styles = {
   // define a new style or list existing ones
   style(name, style) {
     if (name != null && style != null) {
-      style = extend({}, defaults, style);
+      style = extend({}, defaultsStyle, style);
       store.add(name, style);
     }
     else if (name != null) {
@@ -27,9 +27,9 @@ const styles = {
 
   defaults(style) {
     if (style != null) {
-      defaults = style;
+      defaultsStyle = style;
     }
-    return defaults;
+    return defaultsStyle;
   },
 
   stringForStyle(name) {

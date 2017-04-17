@@ -4,7 +4,7 @@ import { noop } from './utils.js'
 //  - some methods might not be defined. fake them with `noop` function
 //  - some "methods" might not be functions but properties (eg. profile & profileEnd in IE11)
 
-const console = window.console || {};
+const console = this.console || {};
 
 const checkConsoleMethods = (methodList) => {
   const ret = [];
