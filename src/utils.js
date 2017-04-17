@@ -1,3 +1,5 @@
+export const noop = () => {};
+
 export const extend = (destObj, ...args) => {
   for (const i in args) {
     const obj = args[i];
