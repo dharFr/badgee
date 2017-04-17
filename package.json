@@ -35,7 +35,7 @@
     "open": "opener http://localhost:8000/test/",
     "live-reload": "live-reload --port 8001 build/",
     "size": "echo \"Gzipped Size: $(strip-json-comments --no-whitespace $npm_package_main | gzip-size)\"",
-    "dev": "npm run open -s & parallelshell 'npm run live-reload -s' 'npm run serve -s' 'npm run watch -s'"
+    "dev": "npm-run-all --silent open -p 'live-reload -s' 'serve -s' 'watch -s'"
   },
   "devDependencies": {
     "buble": "^0.15.2",
@@ -50,7 +50,6 @@
     "mocha": "^3.0.2",
     "npm-run-all": "^4.0.2",
     "opener": "^1.4.1",
-    "parallelshell": "^2.0.0",
     "rimraf": "^2.6.1",
     "rollup": "^0.41.6",
     "rollup-plugin-buble": "^0.15.0",
