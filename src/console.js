@@ -1,4 +1,4 @@
-import { noop } from './utils.js'
+import { noop, each } from './utils.js'
 // Homogeneisation of the console API on different browsers
 //  - add compat console object if not available
 //  - some methods might not be defined. fake them with `noop` function
@@ -6,12 +6,11 @@ import { noop } from './utils.js'
 const console = this.console || {};
 
 const checkConsoleMethods = (methodList) => {
-  for (const i in methodList) {
-    const method = methodList[i]
+  each(methodList, (method) => {
     if (!console[method]) {
       console[method] = noop;
     }
-  }
+  })
 };
 
 // For the record, every single console methods and properties :
@@ -27,8 +26,7 @@ const unformatableMethods = ['clear', 'dir', 'groupEnd'];
 checkConsoleMethods(methods)
 checkConsoleMethods(unformatableMethods)
 
-export {
-  methods,
-  unformatableMethods
-}
+export const eachFormatableMethod   = (fn) => { each(methods, fn) }
+export const eachUnformatableMethod = (fn) => { each(unformatableMethods, fn) }
+
 export default console

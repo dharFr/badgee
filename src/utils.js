@@ -1,5 +1,10 @@
 export const noop = () => {};
 
+export const each = (items, fn) => {
+  for (const i in items) {
+    fn(items[i], i)
+  }
+}
 const _extend = (dest, obj) => {
   for (const i in obj) dest[i] = obj[i];
   return dest;

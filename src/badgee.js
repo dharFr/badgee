@@ -2,7 +2,7 @@
 /*! badgee v1.2.0 - MIT license */
 import { noop } from './utils.js'
 import console, {
-  methods, unformatableMethods
+  eachFormatableMethod, eachUnformatableMethod
 } from './console.js'
 import config from './config';
 import Store from './store';
@@ -18,7 +18,7 @@ let filter = {
 
 // concat foramted label for badges output
 // (i.e. "%cbadge1%cbadge2" with style or "[badge1][badge2] without style")
-const concatLabelToOutput = function(out, label, hasStyle){
+const concatLabelToOutput = function(out, label, hasStyle) {
   if (out == null) { out = ''; }
   if (hasStyle == null) { hasStyle = false; }
   return `${out}${
@@ -30,7 +30,7 @@ const concatLabelToOutput = function(out, label, hasStyle){
 
 // Given a label, style and parentName, generate the full list of arguments to
 // pass to console method to get a foramted output
-var argsForBadgee = function(label, style, parentName) {
+const argsForBadgee = function(label, style, parentName) {
   let args = [];
 
   if (!currentConf.styled) { style = false; }
@@ -53,23 +53,17 @@ var argsForBadgee = function(label, style, parentName) {
 // Define empty Badgee methods
 // Intended to be called in a 'Badgee' instance context (e.g. with 'bind()')
 const _disable = function() {
-  for (const i in methods) {
-    const method = methods[i]
-    this[method] = noop;
-  }
-  for (const i in unformatableMethods) {
-    const method = unformatableMethods[i];
-    this[method] = noop;
-  }
+  const disableMethod = (method) => this[method] = noop;
+  eachFormatableMethod(disableMethod)
+  eachUnformatableMethod(disableMethod)
 };
 
 
 // Define Badgee methods form console object
 // Intended to be called in a 'Badgee' instance context (e.g. with 'bind()')
 const _defineMethods = function(style, parentName) {
-
   if (!currentConf.enabled) {
-    return _disable.bind(this)();
+    _disable.bind(this)();
   } else {
     // get arguments to pass to console object
     const args = argsForBadgee(this.label, style, parentName);
@@ -88,16 +82,14 @@ const _defineMethods = function(style, parentName) {
       _disable.bind(this)();
     } else {
       // Define Badgee 'formatable' methods form console object
-      for (const i in methods) {
-        const method = methods[i]
-        this[method] = console[method].bind(console, ...Array.from(args));
-      }
+      eachFormatableMethod((method) => {
+        this[method] = console[method].bind(console, ...args);
+      })
 
       // Define Badgee 'unformatable' methods form console object
-      for (const i in unformatableMethods) {
-        const method = unformatableMethods[i];
+      eachUnformatableMethod((method) => {
         this[method] = console[method].bind(console);
-      }
+      })
     }
   }
 };

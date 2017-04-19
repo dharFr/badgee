@@ -1,3 +1,5 @@
+import { each } from './utils.js'
+
 class Store {
   constructor() {
     this._store = {};
@@ -18,10 +20,9 @@ class Store {
   }
 
   each(func) {
-    for (const name in this._store) {
-      const obj = this._store[name];
+    each(this._store, function(obj, name) {
       func(name, obj);
-    }
+    })
   }
 }
 
