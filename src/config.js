@@ -1,4 +1,4 @@
-import { extend } from './utils';
+import { clone, extend } from './utils';
 
 // default configuration
 const defaults = {
@@ -6,12 +6,12 @@ const defaults = {
   styled  :  true
 };
 
-let config = extend({}, defaults);
+let config = clone(defaults);
 
 const configure = function(conf) {
   // update conf
   if (typeof conf === 'object') {
-    config = extend({}, defaults, conf);
+    config = extend(defaults, conf);
   }
 
   // return current conf
