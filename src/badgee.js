@@ -1,15 +1,14 @@
 /* eslint-disable no-console */
 /*! badgee v1.2.0 - MIT license */
-import { noop } from './utils.js'
+import { noop, each } from './utils.js'
 import console, {
   eachFormatableMethod, eachUnformatableMethod
 } from './console.js'
 import config from './config';
-import Store from './store';
 import styles from './styles';
 
 let currentConf = config();
-const store     = new Store;
+const store     = {};
 
 let filter = {
   include : null,
@@ -35,7 +34,7 @@ const argsForBadgee = function(label, style, parentName) {
 
   if (!currentConf.styled) { style = false; }
   if (parentName) {
-    const parent = store.get(parentName);
+    const parent = store[parentName];
     args = argsForBadgee(parent.badgee.label, parent.style, parent.parent);
   }
 
@@ -104,11 +103,11 @@ class Badgee {
     _defineMethods.bind(this, style, parentName)();
 
     // Store instance for later reference
-    store.add(this.label, {
+    store[this.label] = {
       badgee: this,
       style,
       parent: parentName
-    });
+    };
   }
 
   // Defines a new Badgee instance with @ as parent Badge
@@ -123,13 +122,13 @@ class Badgee {
 let b = new Badgee;
 
 const redefineMethodsForAllBadges = () =>
-  store.each((label, b) => _defineMethods.bind(b.badgee, b.style, b.parent)())
+  each(store, (label, b) => _defineMethods.bind(b.badgee, b.style, b.parent)())
 ;
 
 // Augment public instance with utility methods
 b.style         = styles.style;
 b.defaultStyle  = styles.defaults;
-b.get           = label => __guard__(store.get(label), x => x.badgee);
+b.get           = label => (store[label] || {}).badgee;
 b.filter        = {
   none() {
     filter = {
@@ -184,8 +183,3 @@ try {
 }
 
 export default b;
-
-
-function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
-}

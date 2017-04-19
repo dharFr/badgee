@@ -1,8 +1,7 @@
-import Store from './store';
 import { extend } from './utils';
 
 // Create store to save styles
-const store = new Store;
+const store = {};
 
 // Default properties for styles
 let defaultsStyle = {
@@ -17,12 +16,12 @@ const styles = {
   style(name, style) {
     if (name != null && style != null) {
       style = extend(defaultsStyle, style);
-      store.add(name, style);
+      store[name] = style;
     }
     else if (name != null) {
-      return store.get(name);
+      return store[name];
     }
-    return store.list();
+    return Object.keys(store);
   },
 
   defaults(style) {
@@ -33,7 +32,7 @@ const styles = {
   },
 
   stringForStyle(name) {
-    const style = store.get(name);
+    const style = store[name];
     return ((() => {
       const result = [];
       for (const k in style) {
