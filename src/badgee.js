@@ -2,7 +2,7 @@
 /*! badgee v1.2.0 - MIT license */
 import { noop } from './utils.js'
 import console, {
-  properties, methods, unformatableMethods
+  methods, unformatableMethods
 } from './console.js'
 import config from './config';
 import Store from './store';
@@ -99,9 +99,6 @@ const _defineMethods = function(style, parentName) {
         this[method] = console[method].bind(console);
       }
     }
-
-    // Define Badgee properties from console object
-    return properties.map((prop) => (this[prop] = console[prop]));
   }
 };
 
