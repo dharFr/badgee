@@ -9,7 +9,7 @@
   "umd:main": "build/badgee.umd.js",
   "repository": {
     "type": "git",
-    "url": "git@github.com:dharFr/badgee.git"
+    "url": "git+ssh://git@github.com/dharFr/badgee.git"
   },
   "license": "MIT",
   "directories": {
@@ -58,5 +58,16 @@
     "uglify-js": "^2.6.1",
     "watch": "^1.0.2"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "bugs": {
+    "url": "https://github.com/dharFr/badgee/issues"
+  },
+  "homepage": "https://github.com/dharFr/badgee#readme",
+  "keywords": [
+    "devtools",
+    "console",
+    "console-log",
+    "console-error",
+    "logger"
+  ]
 }
