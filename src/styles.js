@@ -54,18 +54,9 @@ const styles = {
 const empty = {};
 const black = {'color': 'black'};
 
-styles.style('black',   extend(empty, {'background': 'black'}));
-styles.style('blue',    extend(empty, {'background': 'blue'}));
-styles.style('brown',   extend(empty, {'background': 'brown'}));
-styles.style('gray',    extend(empty, {'background': 'gray'}));
 styles.style('green',   extend(empty, {'background': 'green'}));
-styles.style('purple',  extend(empty, {'background': 'purple'}));
 styles.style('red',     extend(empty, {'background': 'red'}));
-styles.style('cyan',    extend(black, {'background': 'cyan'}));
-styles.style('magenta', extend(black, {'background': 'magenta'}));
 styles.style('orange',  extend(black, {'background': 'orange'}));
-styles.style('pink',    extend(black, {'background': 'pink'}));
-styles.style('yellow',  extend(black, {'background': 'yellow'}));
 
 
 export default styles;
