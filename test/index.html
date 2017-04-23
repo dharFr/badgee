@@ -116,7 +116,7 @@
 
       // You can also use the `define()` method on an existing badgee instance
       // to define a nested badge
-      var helloWorldBadge = helloBadge.define('world', 'purple');
+      var helloWorldBadge = helloBadge.define('world', 'orange');
 
       // The newly defined object is still a `badgee` instance. But every
       // console output will be prefixed with two badges instead of one.
@@ -131,18 +131,12 @@
         helloWorldBadge.error('This is an "error"');
       helloBadge.groupEnd();
 
-      // Some methods can be prefixed with a badge but are still available for
+      // Some methods can not be prefixed with a badge but are still available for
       // convenience.
       helloBadge.groupCollapsed('Creating a "groupCollapsed"');
-        helloBadge.assert(false);
         // 'clear()' method is also available but commented for obvious reason
         // helloBadge.clear();
-        helloBadge.count('This is a "count"');
         helloBadge.dir({a: 'this is', b: 'a dir'});
-        helloBadge.table([{key: 'This is'}, {key: 'a table'}]);
-        helloBadge.trace('This is a "trace"');
-        helloBadge.time('t');
-        helloBadge.timeEnd('t');
       helloBadge.groupEnd();
     })();
 
@@ -152,6 +146,7 @@
       var important       = badgee.get('Important');
       var styledBadge     = badgee.get('Styled');
 
+      badgee.group('Filter: badgee.filter.include(/hello/i)');
       // Defining a global inclusive filter
       // => only output logs from loggers that match the filter
       badgee.filter.include(/hello/i);
@@ -161,6 +156,10 @@
       important.log('Filter: matches /hello/i : filtered, won\'t be displayed');
       styledBadge.log('Filter: matches /hello/i : filtered, won\'t be displayed');
 
+      badgee.filter.none();
+      badgee.groupEnd();
+
+      badgee.group('Filter: badgee.filter.exclude(/world/i)');
       // Defining a global exclusive filter
       // => output every logs except those from loggers that match the filter
       badgee.filter.exclude(/world/i);
@@ -170,6 +169,10 @@
       important.log('Filter: doesn\'t match /world/i : not filtered');
       styledBadge.log('Filter: doesn\'t match /world/i : not filtered');
 
+      badgee.filter.none();
+      badgee.groupEnd();
+
+      badgee.group('Filter: badgee.filter.none()');
       // Remove already defined filters
       badgee.filter.none();
 
@@ -177,6 +180,8 @@
       helloWorldBadge.log('No more filters : everything is displayed');
       important.log('No more filters : everything is displayed');
       styledBadge.log('No more filters : everything is displayed');
+
+      badgee.groupEnd();
     })();
   </script>
 </body>

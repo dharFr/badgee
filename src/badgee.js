@@ -121,9 +121,12 @@ class Badgee {
 // Create public Badgee instance
 let b = new Badgee;
 
-const redefineMethodsForAllBadges = () =>
-  each(store, (label, b) => _defineMethods.bind(b.badgee, b.style, b.parent)())
-;
+const redefineMethodsForAllBadges = () => {
+  each(store, (b, label) => {
+    _defineMethods.bind(b.badgee, b.style, b.parent)()
+  })
+}
+
 
 // Augment public instance with utility methods
 b.style         = styles.style;
