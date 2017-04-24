@@ -18,4 +18,5 @@ const configure = function(conf) {
   return config;
 };
 
-export default configure
+// export default configure
+export { config, configure }

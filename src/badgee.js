@@ -1,45 +1,31 @@
 /* eslint-disable no-console */
 /*! badgee v1.2.0 - MIT license */
-import { noop, each } from './utils.js'
+import { noop, extend, each } from './utils.js'
 import console, {
   eachFormatableMethod, eachUnformatableMethod
 } from './console.js'
-import config from './config';
-import styles from './styles';
+import { config, configure } from './config.js';
+import styles from './styles.js';
+import { getFilter, isFiltered } from './filter.js';
 
-let currentConf = config();
-const store     = {};
-
-let filter = {
-  include : null,
-  exclude : null
-};
-
-// concat foramted label for badges output
-// (i.e. "%cbadge1%cbadge2" with style or "[badge1][badge2] without style")
-const concatLabelToOutput = function(out, label, hasStyle) {
-  if (out == null) { out = ''; }
-  if (hasStyle == null) { hasStyle = false; }
-  return `${out}${
-    hasStyle ? '%c' : '['
-  }${label}${
-    !hasStyle ? ']' : ''
-  }`;
-};
+const store = {};
 
 // Given a label, style and parentName, generate the full list of arguments to
 // pass to console method to get a foramted output
 const argsForBadgee = function(label, style, parentName) {
   let args = [];
 
-  if (!currentConf.styled) { style = false; }
+  if (!config.styled) { style = false; }
   if (parentName) {
     const parent = store[parentName];
     args = argsForBadgee(parent.badgee.label, parent.style, parent.parent);
   }
 
   if (label) {
-    args[0] = concatLabelToOutput(args[0], label, !!style);
+    // concat formated label for badges output
+    // (i.e. "%cbadge1%cbadge2" with style or "[badge1][badge2] without style")
+    const formatedLabel = !style ? `[${label}]` : `%c${label}`
+    args[0] = `${args[0] || ''}${formatedLabel}`
   }
 
   if (style) {
@@ -61,7 +47,7 @@ const _disable = function() {
 // Define Badgee methods form console object
 // Intended to be called in a 'Badgee' instance context (e.g. with 'bind()')
 const _defineMethods = function(style, parentName) {
-  if (!currentConf.enabled) {
+  if (!config.enabled) {
     _disable.bind(this)();
   } else {
     // get arguments to pass to console object
@@ -75,9 +61,7 @@ const _defineMethods = function(style, parentName) {
       args.push('p:a');
     }
 
-    const isntInclusive = (filter.include != null) && !filter.include.test(args[0]);
-    const isExclusive   = filter.exclude != null ? filter.exclude.test(args[0]) : undefined;
-    if (isntInclusive || isExclusive) {
+    if (isFiltered(args[0])) {
       _disable.bind(this)();
     } else {
       // Define Badgee 'formatable' methods form console object
@@ -118,51 +102,23 @@ class Badgee {
 
 // ==================================
 
-// Create public Badgee instance
-let b = new Badgee;
-
 const redefineMethodsForAllBadges = () => {
-  each(store, (b, label) => {
+  each(store, (b) => {
     _defineMethods.bind(b.badgee, b.style, b.parent)()
   })
 }
 
+// Create public Badgee instance
+let b = new Badgee;
 
 // Augment public instance with utility methods
-b.style         = styles.style;
+b.style = styles.style;
 b.defaultStyle  = styles.defaults;
-b.get           = label => (store[label] || {}).badgee;
-b.filter        = {
-  none() {
-    filter = {
-      include   : null,
-      exclude : null
-    };
-    redefineMethodsForAllBadges();
-    return b.filter;
-  },
+b.get = label => (store[label] || {}).badgee;
+b.filter = getFilter(redefineMethodsForAllBadges)
 
-  include(matcher) {
-    if (matcher == null) { matcher = null; }
-    if (matcher !== filter.include) {
-      filter.include   = matcher;
-      redefineMethodsForAllBadges();
-    }
-    return b.filter;
-  },
-
-  exclude(matcher) {
-    if (matcher == null) { matcher = null; }
-    if (matcher !== filter.exclude) {
-      filter.exclude = matcher;
-      redefineMethodsForAllBadges();
-    }
-    return b.filter;
-  }
-};
-
-b.config      = function(conf) {
-  currentConf = config(conf);
+b.config = function(conf) {
+  const currentConf = configure(conf);
   // when conf is updated, redefine every badgee method
   if (conf) {
     redefineMethodsForAllBadges();
@@ -175,14 +131,14 @@ b.config      = function(conf) {
 try {
   b.log();
 } catch (e) {
-  const fallback = console;
-  fallback.define = () => console;
-  fallback.style  = b.style;
-  fallback.styleDefaults = b.styleDefaults;
-  fallback.filter = b.filter;
-  fallback.get    = () => console;
-  fallback.config = () => b.config;
-  b = fallback;
+  b = extend(console, {
+    define        : () => console,
+    style         : b.style,
+    styleDefaults : b.styleDefaults,
+    filter        : b.filter,
+    get           : () => console,
+    config        : () => b.config,
+  });
 }
 
 export default b;
