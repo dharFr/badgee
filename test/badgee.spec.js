@@ -138,7 +138,6 @@ describe('badgee', () => {
   });
 
   describe('badgee.get', () => {
-
     it('should be a function', () => expect(badgee).to.respondTo('get'));
 
     it('should return an existing badgee', () => {
@@ -153,7 +152,7 @@ describe('badgee', () => {
       'groupCollapsed', 'info', 'log', 'warn'
     ];
     const unformatableMethods = [
-      'clear', 'groupEnd'
+      'clear', 'dir', 'groupEnd'
     ];
 
     const _spyConsole = function(conf, method) {
@@ -198,7 +197,7 @@ describe('badgee', () => {
             badge1.instance[method](...args);
 
             expect(console[method].calledOnce).to.be.true;
-            expect(console[method].calledWithExactly(`${badge1.cName}%c`, badge1.cSytle, 'p:a', ...args)).to.be.true;
+            expect(console[method].calledWithExactly(`${badge1.cName}`, badge1.cSytle, ...args)).to.be.true;
           });
 
           it(`badge2.${method} should call console.${method} with extra parameters`, () => {
@@ -207,7 +206,7 @@ describe('badgee', () => {
             badge2.instance[method](...args);
 
             expect(console[method].calledOnce).to.be.true;
-            // expect(console[method].calledWithExactly(`${[badge1.cName,badge2.cName].join('')}%c`, badge1.cSytle, badge2.cSytle, 'p:a', ...args)).to.be.true;
+            expect(console[method].calledWithExactly(`${[badge1.cName,badge2.cName].join('')}`, badge1.cSytle, badge2.cSytle, ...args)).to.be.true;
           });
         });
 
@@ -385,4 +384,5 @@ describe('badgee', () => {
       expect(console.log.called).to.be.true;
     });
   });
+
 });

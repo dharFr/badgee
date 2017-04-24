@@ -35,44 +35,27 @@ const argsForBadgee = function(label, style, parentName) {
   return args;
 };
 
-// Define empty Badgee methods
-// Intended to be called in a 'Badgee' instance context (e.g. with 'bind()')
-const _disable = function() {
-  eachMethod((method) => this[method] = noop)
-};
-
-
 // Define Badgee methods form console object
 // Intended to be called in a 'Badgee' instance context (e.g. with 'bind()')
 const _defineMethods = function(style, parentName) {
-  if (!config.enabled) {
-    _disable.bind(this)();
-  } else {
-    // get arguments to pass to console object
-    const args = argsForBadgee(this.label, style, parentName);
+  // get arguments to pass to console object
+  const args = argsForBadgee(this.label, style, parentName);
 
-    // Reset style for FF :
-    // Defining a last style to an unknown property seems to reset to the default
-    // behavior on FF
-    if (style && (args.length > 1)) {
-      args[0] += '%c';
-      args.push('p:a');
-    }
-
-    if (isFiltered(args[0])) {
-      _disable.bind(this)();
-    } else {
-      // Define Badgee 'formatable' methods form console object
-      eachFormatableMethod((method) => {
-        this[method] = console[method].bind(console, ...args);
-      })
-
-      // Define Badgee 'unformatable' methods form console object
-      eachUnformatableMethod((method) => {
-        this[method] = console[method].bind(console);
-      })
-    }
+  if (!config.enabled || isFiltered(args[0])) {
+    // disable everything
+    eachMethod((method) => this[method] = noop)
+    return
   }
+
+  // Define Badgee 'formatable' methods form console object
+  eachFormatableMethod((method) => {
+    this[method] = console[method].bind(console, ...args);
+  })
+
+  // Define Badgee 'unformatable' methods form console object
+  eachUnformatableMethod((method) => {
+    this[method] = console[method].bind(console);
+  })
 };
 
 // ==================================
