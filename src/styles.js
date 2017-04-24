@@ -1,4 +1,4 @@
-import { extend } from './utils';
+import { each, extend } from './utils';
 
 // Create store to save styles
 const store = {};
@@ -32,19 +32,11 @@ const styles = {
   },
 
   stringForStyle(name) {
-    const style = store[name];
-    return ((() => {
-      const result = [];
-      for (const k in style) {
-        const v = style[k];
-        let item;
-        if (style.hasOwnProperty(k)) {
-          item = `${k}:${v};`;
-        }
-        result.push(item);
-      }
-      return result;
-    })()).join('');
+    const res = []
+    each(store[name], (style, k) => {
+      res.push(`${k}:${style};`)
+    })
+    return res.join('');
   }
 };
 

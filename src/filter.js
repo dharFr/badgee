@@ -19,8 +19,7 @@ export function getFilter(onFilterChange) {
       return this;
     },
 
-    include(matcher) {
-      if (matcher == null) { matcher = null; }
+    include(matcher = null) {
       if (matcher !== filter.include) {
         filter.include = matcher;
         onFilterChange()
@@ -28,8 +27,7 @@ export function getFilter(onFilterChange) {
       return this;
     },
 
-    exclude(matcher) {
-      if (matcher == null) { matcher = null; }
+    exclude(matcher = null) {
       if (matcher !== filter.exclude) {
         filter.exclude = matcher;
         onFilterChange();

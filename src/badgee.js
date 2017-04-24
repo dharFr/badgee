@@ -2,7 +2,7 @@
 /*! badgee v1.2.0 - MIT license */
 import { noop, extend, each } from './utils.js'
 import console, {
-  eachFormatableMethod, eachUnformatableMethod
+  eachMethod, eachFormatableMethod, eachUnformatableMethod
 } from './console.js'
 import { config, configure } from './config.js';
 import styles from './styles.js';
@@ -38,9 +38,7 @@ const argsForBadgee = function(label, style, parentName) {
 // Define empty Badgee methods
 // Intended to be called in a 'Badgee' instance context (e.g. with 'bind()')
 const _disable = function() {
-  const disableMethod = (method) => this[method] = noop;
-  eachFormatableMethod(disableMethod)
-  eachUnformatableMethod(disableMethod)
+  eachMethod((method) => this[method] = noop)
 };
 
 
@@ -118,12 +116,12 @@ b.get = label => (store[label] || {}).badgee;
 b.filter = getFilter(redefineMethodsForAllBadges)
 
 b.config = function(conf) {
-  const currentConf = configure(conf);
   // when conf is updated, redefine every badgee method
   if (conf) {
+    configure(conf)
     redefineMethodsForAllBadges();
   }
-  return currentConf;
+  return config;
 };
 
 // Some browsers don't allow to use bind on console object anyway
@@ -132,12 +130,12 @@ try {
   b.log();
 } catch (e) {
   b = extend(console, {
-    define        : () => console,
-    style         : b.style,
-    styleDefaults : b.styleDefaults,
-    filter        : b.filter,
-    get           : () => console,
-    config        : () => b.config,
+    define       : () => b,
+    style        : b.style,
+    defaultStyle : b.defaultStyle,
+    filter       : b.filter,
+    get          : () => b,
+    config       : () => b.config,
   });
 }
 

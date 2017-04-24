@@ -5,14 +5,6 @@ import { noop, each } from './utils.js'
 
 const console = this.console || {};
 
-const checkConsoleMethods = (methodList) => {
-  each(methodList, (method) => {
-    if (!console[method]) {
-      console[method] = noop;
-    }
-  })
-};
-
 // For the record, every single console methods and properties :
 // ["memory", "exception", "debug", "error", "info", "log", "warn", "dir",
 // "dirxml", "table", "trace", "assert", "count", "markTimeline", "profile",
@@ -23,10 +15,15 @@ const checkConsoleMethods = (methodList) => {
 const methods             = ['debug', 'error', 'group', 'groupCollapsed', 'info', 'log', 'warn'];
 const unformatableMethods = ['clear', 'dir', 'groupEnd'];
 
-checkConsoleMethods(methods)
-checkConsoleMethods(unformatableMethods)
-
 export const eachFormatableMethod   = (fn) => { each(methods, fn) }
 export const eachUnformatableMethod = (fn) => { each(unformatableMethods, fn) }
+export const eachMethod = (fn) => {
+  eachFormatableMethod(fn)
+  eachUnformatableMethod(fn)
+}
+
+eachMethod((method) => {
+  console[method] = console[method] || noop;
+})
 
 export default console
