@@ -46,7 +46,7 @@
     "opener": "^1.4.1",
     "parallelshell": "^2.0.0",
     "sinon": "^2.0.0",
-    "uglify-js": "^2.6.1",
+    "uglify-js": "^3.0.0",
     "watchify": "^3.6.1"
   },
   "dependencies": {}
