@@ -2,8 +2,7 @@
 
 [![Build Status](https://travis-ci.org/dharFr/badgee.svg?branch=master)](https://travis-ci.org/dharFr/badgee)
 [![npm version](https://img.shields.io/npm/v/badgee.svg)](https://www.npmjs.com/package/badgee)
-[![Dependency Status](https://david-dm.org/dharFr/badgee.svg)](https://david-dm.org/dharFr/badgee)
-[![devDependency Status](https://david-dm.org/dharFr/badgee/dev-status.svg)](https://david-dm.org/dharFr/badgee#info=devDependencies)
+[![Greenkeeper badge](https://badges.greenkeeper.io/dharFr/badgee.svg)](https://greenkeeper.io/)
 
 A browser console improvement
 
