@@ -30,7 +30,7 @@
     "minify:umd": "uglifyjs $npm_package_umd_main -cm --output $npm_package_umd_main -p relative --in-source-map ${npm_package_umd_main}.map --source-map ${npm_package_umd_main}.map",
     "preversion": "npm run test",
     "version": "npm run build && git add -A build",
-    "postversion": "git push --tags origin master",
+    "postversion": "git push --tags",
     "serve": "http-server -p 8000 .",
     "open": "opener http://localhost:8000/test/",
     "live-reload": "live-reload --port 8001 build/",
