@@ -50,7 +50,7 @@ var config = clone(defaults);
 
 var configure = function(conf) {
   // update conf
-  if (typeof conf === 'object') {
+  if (conf) {
     config = extend(defaults, conf);
   }
 
@@ -69,86 +69,76 @@ var defaultsStyle = {
   'color'        : 'white'
 };
 
-var styles = {
-  // define a new style or list existing ones
-  style: function style(name, style$1) {
-    if (name != null && style$1 != null) {
-      style$1 = extend(defaultsStyle, style$1);
-      store$1[name] = style$1;
-    }
-    else if (name != null) {
-      return store$1[name];
-    }
-    return Object.keys(store$1);
-  },
-
-  defaults: function defaults(style) {
-    if (style != null) {
-      defaultsStyle = style;
-    }
-    return defaultsStyle;
-  },
-
-  stringForStyle: function stringForStyle(name) {
-    var res = [];
-    each(store$1[name], function (style, k) {
-      res.push((k + ":" + style + ";"));
-    });
-    return res.join('');
+// define a new style or list existing ones
+var styles = function (name, style) {
+  if (name != null && style != null) {
+    style = extend(defaultsStyle, style);
+    store$1[name] = style;
   }
+  else if (name != null) {
+    return store$1[name];
+  }
+  return Object.keys(store$1);
 };
 
+var defaultStyle = function (style) {
+  if (style != null) {
+    defaultsStyle = style;
+  }
+  return defaultsStyle;
+};
+
+var style2Str = function (name) {
+  var res = '';
+  each(store$1[name], function (style, k) {
+    res += k + ":" + style + ";";
+  });
+  return res
+};
 
 // define a few styles
-var empty = {};
-var black = {'color': 'black'};
+var buildStyle = function (base, bkgColor) { return extend(base, {'background': bkgColor}); };
 
-styles.style('green',   extend(empty, {'background': 'green'}));
-styles.style('red',     extend(empty, {'background': 'red'}));
-styles.style('orange',  extend(black, {'background': 'orange'}));
+each(['green', 'red'], function (color) {
+  styles(color, buildStyle({}, color));
+});
+styles('orange', buildStyle({'color': 'black'}, 'orange'));
 
-var filter = {
-  include : null,
-  exclude : null
+var include = null;
+var exclude = null;
+
+var isFiltered = function (str) {
+  return ((include != null) && !include.test(str)) //isntIncluded
+    || ((exclude != null) && exclude.test(str)) // isExcluded
 };
 
-function isFiltered(str) {
-  var isntIncluded = (filter.include != null) && !filter.include.test(str);
-  var isExcluded = (filter.exclude != null) && filter.exclude.test(str);
-  return isntIncluded || isExcluded
-}
-
-function getFilter(onFilterChange) {
+var getFilter = function (onFilterChange) {
   return {
     none: function none() {
-      filter.include = null;
-      filter.exclude = null;
+      include = null;
+      exclude = null;
 
       onFilterChange();
       return this;
     },
 
-    include: function include(matcher) {
-      if ( matcher === void 0 ) matcher = null;
-
-      if (matcher !== filter.include) {
-        filter.include = matcher;
+    include: function include$1(matcher) {
+      if (matcher !== include) {
+        include = matcher;
         onFilterChange();
       }
-      return this;
+      return this
     },
 
-    exclude: function exclude(matcher) {
-      if ( matcher === void 0 ) matcher = null;
-
-      if (matcher !== filter.exclude) {
-        filter.exclude = matcher;
+    exclude: function exclude$1(matcher) {
+      if (matcher !== exclude) {
+        exclude = matcher;
         onFilterChange();
       }
-      return this;
+      return this
     }
   };
-}
+};
 
 /* eslint-disable no-console */
 /*! badgee v1.2.0 - MIT license */
@@ -159,10 +149,12 @@ var store = {};
 var argsForBadgee = function(label, style, parentName) {
   var args = [];
 
-  if (!config.styled) { style = false; }
   if (parentName) {
-    var parent = store[parentName];
-    args = argsForBadgee(parent.badgee.label, parent.style, parent.parent);
+    var ref = store[parentName];
+    var badgee = ref[0];
+    var style$1 = ref[1];
+    var parent = ref[2];
+    args = argsForBadgee(badgee.label, style$1, parent);
   }
 
   if (label) {
@@ -173,7 +165,7 @@ var argsForBadgee = function(label, style, parentName) {
   }
 
   if (style) {
-    args.push(styles.stringForStyle(style));
+    args.push(style2Str(style));
   }
 
   return args;
@@ -185,24 +177,25 @@ var _defineMethods = function(style, parentName) {
   var this$1 = this;
 
   // get arguments to pass to console object
-  var args = argsForBadgee(this.label, style, parentName);
+  var args = argsForBadgee(this.label, config.styled ? style : false, parentName);
 
   if (!config.enabled || isFiltered(args[0])) {
     // disable everything
     eachMethod(function (method) { return this$1[method] = noop; });
-    return
+  }
+  else {
+    // Define Badgee 'formatable' methods form console object
+    eachFormatableMethod(function (method) {
+      this$1[method] = (ref = console[method]).bind.apply(ref, [ console ].concat( args ));
+      var ref;
+    });
+
+    // Define Badgee 'unformatable' methods form console object
+    eachUnformatableMethod(function (method) {
+      this$1[method] = console[method].bind(console);
+    });
   }
 
-  // Define Badgee 'formatable' methods form console object
-  eachFormatableMethod(function (method) {
-    this$1[method] = (ref = console[method]).bind.apply(ref, [ console ].concat( args ));
-    var ref;
-  });
-
-  // Define Badgee 'unformatable' methods form console object
-  eachUnformatableMethod(function (method) {
-    this$1[method] = console[method].bind(console);
-  });
 };
 
 // ==================================
@@ -213,11 +206,7 @@ var Badgee = function Badgee(label, style, parentName) {
   _defineMethods.bind(this, style, parentName)();
 
   // Store instance for later reference
-  store[this.label] = {
-    badgee: this,
-    style: style,
-    parent: parentName
-  };
+  store[label] = [this, style, parentName];
 };
 
 // Defines a new Badgee instance with @ as parent Badge
@@ -228,28 +217,20 @@ Badgee.prototype.define = function define (label, style) {
 // ==================================
 
 var redefineMethodsForAllBadges = function () {
-  each(store, function (b) {
-    _defineMethods.bind(b.badgee, b.style, b.parent)();
+  each(store, function (ref) {
+    var badgee = ref[0];
+    var style = ref[1];
+    var parent = ref[2];
+
+    _defineMethods.bind(badgee, style, parent)();
   });
 };
 
 // Create public Badgee instance
 var b = new Badgee;
 
-// Augment public instance with utility methods
-b.style = styles.style;
-b.defaultStyle  = styles.defaults;
-b.get = function (label) { return (store[label] || {}).badgee; };
-b.filter = getFilter(redefineMethodsForAllBadges);
-
-b.config = function(conf) {
-  // when conf is updated, redefine every badgee method
-  if (conf) {
-    configure(conf);
-    redefineMethodsForAllBadges();
-  }
-  return config;
-};
+// Augment public instance with getter method
+b.get = function (label) { return (store[label] || {})[0]; };
 
 // Some browsers don't allow to use bind on console object anyway
 // fallback to default if needed
@@ -257,14 +238,23 @@ try {
   b.log();
 } catch (e) {
   b = extend(console, {
-    define       : function () { return b; },
-    style        : b.style,
-    defaultStyle : b.defaultStyle,
-    filter       : b.filter,
-    get          : function () { return b; },
-    config       : function () { return b.config; },
+    define : function () { return b; },
+    get    : function () { return b; },
   });
 }
+
+// Augment public instance with a few utility methods
+b.style = styles;
+b.defaultStyle  = defaultStyle;
+b.filter = getFilter(redefineMethodsForAllBadges);
+b.config = function(conf) {
+  // when conf is updated, redefine every badgee method
+  if (conf && typeof conf==='object') {
+    configure(conf);
+    redefineMethodsForAllBadges();
+  }
+  return config;
+};
 
 var b$1 = b;
 
