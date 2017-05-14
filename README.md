@@ -1,8 +1,9 @@
 # badgee.js
 
-[![Build Status](https://travis-ci.org/dharFr/badgee.svg?branch=master)](https://travis-ci.org/dharFr/badgee)
 [![npm version](https://img.shields.io/npm/v/badgee.svg)](https://www.npmjs.com/package/badgee)
+[![Build Status](https://travis-ci.org/dharFr/badgee.svg?branch=master)](https://travis-ci.org/dharFr/badgee)
 [![Greenkeeper badge](https://badges.greenkeeper.io/dharFr/badgee.svg)](https://greenkeeper.io/)
+[![gzip size](http://img.badgesize.io/https://unpkg.com/badgee@latest/build/badgee.js?compression=gzip)](https://unpkg.com/badgee@latest/build/badgee.js)
 
 A browser console improvement
 
