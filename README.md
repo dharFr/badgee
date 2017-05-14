@@ -1,18 +1,18 @@
 # badgee.js
 
+A browser console improvement, in less than 1 kB
+
 [![npm version](https://img.shields.io/npm/v/badgee.svg)](https://www.npmjs.com/package/badgee)
 [![Build Status](https://travis-ci.org/dharFr/badgee.svg?branch=master)](https://travis-ci.org/dharFr/badgee)
 [![Greenkeeper badge](https://badges.greenkeeper.io/dharFr/badgee.svg)](https://greenkeeper.io/)
 [![gzip size](http://img.badgesize.io/https://unpkg.com/badgee@latest/build/badgee.js?compression=gzip)](https://unpkg.com/badgee@latest/build/badgee.js)
-
-A browser console improvement
 
 ## What is `badgee`?
 
 It's an add-on to the browser console, created to improve readability and flexibility. 
 It provides the same API than your brower console, adding a few extra features.
 
-![overview](http://www.dhar.fr/assets/badgee/complete.png)
+![overview](https://olivier.audard.net/assets/badgee/complete.png)
 
 ## Install with NPM
 
@@ -32,7 +32,7 @@ You can start using it without configuration as you usually do with 'console' ob
 ```js
 badgee.log('Configuring badgee...');
 ```
-> ![simple-log](http://www.dhar.fr/assets/badgee/step-1.png)
+> ![simple-log](https://olivier.audard.net/assets/badgee/step-1.png)
 
 ### Configuration
 
@@ -54,7 +54,7 @@ Called without any arguments, the `config` method returns the current configurat
 ```js
 badgee.log( 'Config set to:', badgee.config() );
 ```
-> ![config](http://www.dhar.fr/assets/badgee/step-2.png)
+> ![config](https://olivier.audard.net/assets/badgee/step-2.png)
 
 ### Defining a new badgee instance
 
@@ -65,7 +65,7 @@ The retunred object works the same way as `console` or `badgee` objects, but eve
 var helloBadge = badgee.define('Hello', 'green');
 helloBadge.log('hello badge defined!');
 ```
-> ![define](http://www.dhar.fr/assets/badgee/step-3.png)
+> ![define](https://olivier.audard.net/assets/badgee/step-3.png)
 
 ### Styling badges
 
@@ -76,7 +76,7 @@ You can list them all using the `style()` method without any argument.
 badgee.log('Default styles for your badgee:', badgee.style());
 // Default styles for your badgee: ["green", "purple", "orange", "red", "yellow"]
 ```
-> ![styles](http://www.dhar.fr/assets/badgee/step-4.png)
+> ![styles](https://olivier.audard.net/assets/badgee/step-4.png)
 
 You can define your own badge style by calling the `style()` method with a name and a list of properties.
 
@@ -98,7 +98,7 @@ The style list gets updated after defining a new style.
 badgee.log('Added "super_important" style to the list:', badgee.style());
 // Added "super_important" style to the list: ["green", "purple", "orange", "red", "yellow", "super_important"]
 ```
-> ![style](http://www.dhar.fr/assets/badgee/step-5.png)
+> ![style](https://olivier.audard.net/assets/badgee/step-5.png)
 
 Once a new style is defined, it can be used to define a new badge.
 
@@ -106,7 +106,7 @@ Once a new style is defined, it can be used to define a new badge.
 var importantBadge = badgee.define('Important', 'super_important');
 importantBadge.log("Don't miss this one!");
 ```
-> ![define](http://www.dhar.fr/assets/badgee/step-6.png)
+> ![define](https://olivier.audard.net/assets/badgee/step-6.png)
 
 ### Reusing badgee instances
 
@@ -117,7 +117,7 @@ Get it back by calling the `get()` method with the badge identifier as a first a
 var helloBadge = badgee.get('Hello');
 helloBadge.log('Using Hello badge from another module' );
 ```
-> ![get](http://www.dhar.fr/assets/badgee/step-7.png)
+> ![get](https://olivier.audard.net/assets/badgee/step-7.png)
 
 ### Nested badges
 
@@ -129,7 +129,7 @@ But every console output will be prefixed with two badges instead of one.
 var helloWorldBadge = helloBadge.define('world', 'purple');
 helloWorldBadge.log('hello world badge defined!');
 ```
-> ![define](http://www.dhar.fr/assets/badgee/step-8.png)
+> ![define](https://olivier.audard.net/assets/badgee/step-8.png)
 
 As any badgee instance is a 'console' superset, you can also use any other `console` method, as you used to.
 
@@ -141,7 +141,7 @@ helloBadge.group('Creating a "group"');
   helloWorldBadge.error('This is an "error"');
 helloBadge.groupEnd();
 ```
-> ![group](http://www.dhar.fr/assets/badgee/step-9.png)
+> ![group](https://olivier.audard.net/assets/badgee/step-9.png)
 
 Some methods can be prefixed with a badge but are still available for convenience.
 
