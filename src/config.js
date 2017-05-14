@@ -10,7 +10,7 @@ let config = clone(defaults);
 
 const configure = function(conf) {
   // update conf
-  if (typeof conf === 'object') {
+  if (conf) {
     config = extend(defaults, conf);
   }
 

@@ -1,38 +1,35 @@
-const filter = {
-  include : null,
-  exclude : null
-};
+let include = null
+let exclude = null
 
-export function isFiltered(str) {
-  const isntIncluded = (filter.include != null) && !filter.include.test(str);
-  const isExcluded = (filter.exclude != null) && filter.exclude.test(str);
-  return isntIncluded || isExcluded
+export const isFiltered = (str) => {
+  return ((include != null) && !include.test(str)) //isntIncluded
+    || ((exclude != null) && exclude.test(str)) // isExcluded
 }
 
-export function getFilter(onFilterChange) {
+export const getFilter = (onFilterChange) => {
   return {
     none() {
-      filter.include = null
-      filter.exclude = null
+      include = null
+      exclude = null
 
       onFilterChange()
       return this;
     },
 
-    include(matcher = null) {
-      if (matcher !== filter.include) {
-        filter.include = matcher;
+    include(matcher) {
+      if (matcher !== include) {
+        include = matcher
         onFilterChange()
       }
-      return this;
+      return this
     },
 
-    exclude(matcher = null) {
-      if (matcher !== filter.exclude) {
-        filter.exclude = matcher;
-        onFilterChange();
+    exclude(matcher) {
+      if (matcher !== exclude) {
+        exclude = matcher
+        onFilterChange()
       }
-      return this;
+      return this
     }
   };
 }

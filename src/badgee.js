@@ -5,7 +5,7 @@ import console, {
   eachMethod, eachFormatableMethod, eachUnformatableMethod
 } from './console.js'
 import { config, configure } from './config.js';
-import styles from './styles.js';
+import { styles, defaultStyle, style2Str } from './styles.js';
 import { getFilter, isFiltered } from './filter.js';
 
 const store = {};
@@ -15,10 +15,9 @@ const store = {};
 const argsForBadgee = function(label, style, parentName) {
   let args = [];
 
-  if (!config.styled) { style = false; }
   if (parentName) {
-    const parent = store[parentName];
-    args = argsForBadgee(parent.badgee.label, parent.style, parent.parent);
+    const [badgee, style, parent] = store[parentName];
+    args = argsForBadgee(badgee.label, style, parent);
   }
 
   if (label) {
@@ -29,7 +28,7 @@ const argsForBadgee = function(label, style, parentName) {
   }
 
   if (style) {
-    args.push(styles.stringForStyle(style));
+    args.push(style2Str(style));
   }
 
   return args;
@@ -39,23 +38,24 @@ const argsForBadgee = function(label, style, parentName) {
 // Intended to be called in a 'Badgee' instance context (e.g. with 'bind()')
 const _defineMethods = function(style, parentName) {
   // get arguments to pass to console object
-  const args = argsForBadgee(this.label, style, parentName);
+  const args = argsForBadgee(this.label, config.styled ? style : false, parentName);
 
   if (!config.enabled || isFiltered(args[0])) {
     // disable everything
     eachMethod((method) => this[method] = noop)
-    return
+  }
+  else {
+    // Define Badgee 'formatable' methods form console object
+    eachFormatableMethod((method) => {
+      this[method] = console[method].bind(console, ...args);
+    });
+
+    // Define Badgee 'unformatable' methods form console object
+    eachUnformatableMethod((method) => {
+      this[method] = console[method].bind(console);
+    });
   }
 
-  // Define Badgee 'formatable' methods form console object
-  eachFormatableMethod((method) => {
-    this[method] = console[method].bind(console, ...args);
-  })
-
-  // Define Badgee 'unformatable' methods form console object
-  eachUnformatableMethod((method) => {
-    this[method] = console[method].bind(console);
-  })
 };
 
 // ==================================
@@ -68,11 +68,7 @@ class Badgee {
     _defineMethods.bind(this, style, parentName)();
 
     // Store instance for later reference
-    store[this.label] = {
-      badgee: this,
-      style,
-      parent: parentName
-    };
+    store[label] = [this, style, parentName];
   }
 
   // Defines a new Badgee instance with @ as parent Badge
@@ -84,8 +80,8 @@ class Badgee {
 // ==================================
 
 const redefineMethodsForAllBadges = () => {
-  each(store, (b) => {
-    _defineMethods.bind(b.badgee, b.style, b.parent)()
+  each(store, ([badgee, style, parent]) => {
+    _defineMethods.bind(badgee, style, parent)()
   })
 }
 
@@ -93,14 +89,14 @@ const redefineMethodsForAllBadges = () => {
 let b = new Badgee;
 
 // Augment public instance with utility methods
-b.style = styles.style;
-b.defaultStyle  = styles.defaults;
-b.get = label => (store[label] || {}).badgee;
+b.style = styles;
+b.defaultStyle  = defaultStyle;
+b.get = (label) => (store[label] || {})[0];
 b.filter = getFilter(redefineMethodsForAllBadges)
 
 b.config = function(conf) {
   // when conf is updated, redefine every badgee method
-  if (conf) {
+  if (conf && typeof conf==='object') {
     configure(conf)
     redefineMethodsForAllBadges();
   }
