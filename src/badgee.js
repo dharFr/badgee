@@ -88,12 +88,24 @@ const redefineMethodsForAllBadges = () => {
 // Create public Badgee instance
 let b = new Badgee;
 
-// Augment public instance with utility methods
+// Augment public instance with getter method
+b.get = (label) => (store[label] || {})[0];
+
+// Some browsers don't allow to use bind on console object anyway
+// fallback to default if needed
+try {
+  b.log();
+} catch (e) {
+  b = extend(console, {
+    define : () => b,
+    get    : () => b,
+  });
+}
+
+// Augment public instance with a few utility methods
 b.style = styles;
 b.defaultStyle  = defaultStyle;
-b.get = (label) => (store[label] || {})[0];
 b.filter = getFilter(redefineMethodsForAllBadges)
-
 b.config = function(conf) {
   // when conf is updated, redefine every badgee method
   if (conf && typeof conf==='object') {
@@ -102,20 +114,5 @@ b.config = function(conf) {
   }
   return config;
 };
-
-// Some browsers don't allow to use bind on console object anyway
-// fallback to default if needed
-try {
-  b.log();
-} catch (e) {
-  b = extend(console, {
-    define       : () => b,
-    style        : b.style,
-    defaultStyle : b.defaultStyle,
-    filter       : b.filter,
-    get          : () => b,
-    config       : () => b.config,
-  });
-}
 
 export default b;
