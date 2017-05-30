@@ -26,8 +26,8 @@ Work pretty well in Chrome, Firefox Web Console or Firebug and Safari desktop.
 
 ## Overview
 
-`badgee` is superset of the 'console' object. 
-You can start using it without configuration as you usually do with 'console' object.
+`badgee` is superset of the `console` object. 
+You can start using it without configuration as you usually do with `console` object.
 
 ```js
 badgee.log('Configuring badgee...');
@@ -59,7 +59,7 @@ badgee.log( 'Config set to:', badgee.config() );
 ### Defining a new badgee instance
 
 The `define()` method creates a new badgee instance identified by the first argument. The second argument points to an already defined style.
-The retunred object works the same way as `console` or `badgee` objects, but every console output is prefixed with a "green" styled badge.
+The returned object works the same way as `console` or `badgee` objects, but every console output is prefixed with a "green" styled badge.
 
 ```js
 var helloBadge = badgee.define('Hello', 'green');
@@ -74,7 +74,7 @@ You can list them all using the `style()` method without any argument.
 
 ```js
 badgee.log('Default styles for your badgee:', badgee.style());
-// Default styles for your badgee: ["green", "purple", "orange", "red", "yellow"]
+// Default styles for your badgee: ["green", "orange", "red"]
 ```
 > ![styles](https://olivier.audard.net/assets/badgee/step-4.png)
 
@@ -96,7 +96,7 @@ The style list gets updated after defining a new style.
 
 ```js
 badgee.log('Added "super_important" style to the list:', badgee.style());
-// Added "super_important" style to the list: ["green", "purple", "orange", "red", "yellow", "super_important"]
+// Added "super_important" style to the list: ["green", "orange", "red", "super_important"]
 ```
 > ![style](https://olivier.audard.net/assets/badgee/step-5.png)
 
@@ -115,7 +115,7 @@ Get it back by calling the `get()` method with the badge identifier as a first a
 
 ```js
 var helloBadge = badgee.get('Hello');
-helloBadge.log('Using Hello badge from another module' );
+helloBadge.log('Using Hello badge from another module');
 ```
 > ![get](https://olivier.audard.net/assets/badgee/step-7.png)
 
@@ -147,17 +147,15 @@ Some methods can be prefixed with a badge but are still available for convenienc
 
 ```js
 helloBadge.groupCollapsed('Creating a "groupCollapsed"');
-  helloBadge.assert(false);
   // 'clear()' method is also available but commented for obvious reason
   // helloBadge.clear();
-  helloBadge.count('This is a "count"');
   helloBadge.dir({a: 'this is', b: 'a dir'});
-  helloBadge.table([{key: 'This is'}, {key: 'a table'}]);
-  helloBadge.trace('This is a "trace"');
-  helloBadge.time('t');
-  helloBadge.timeEnd('t');
-helloBadge.groupEnd();
+helloBadge.groupEnd(); // 'groupEnd()' is available to match with 'groupCollapsed()'
 ```
+
+_*Note*_: Since `v2.0.0`, most unformatable methods have been removed from badgee support. 
+Please use `console` object directly for `assert`, `count`, `exception`, `markTimeline`, `profile`, `profileEnd`, 
+`table`, `trace`, `time`, `timeEnd`, `timeStamp`, `timeline`, `timelineEnd`.
 
 ### Filtering
 
