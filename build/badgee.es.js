@@ -17,7 +17,7 @@ var extend = function (dest, obj) { return _extend(clone(dest), obj); };
 //  - add compat console object if not available
 //  - some methods might not be defined. fake them with `noop` function
 
-var console = window.console || {};
+var console = (typeof window !== "undefined" ? window : global).console || {};
 
 // For the record, every single console methods and properties :
 // ["memory", "exception", "debug", "error", "info", "log", "warn", "dir",

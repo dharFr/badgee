@@ -1,7 +1,7 @@
 {
   "name": "badgee",
   "author": "Olivier Audard <audard@gmail.com>",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "a browser console improvement",
   "main": "build/badgee.js",
   "module": "build/badgee.es.js",
