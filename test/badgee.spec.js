@@ -43,7 +43,7 @@ describe('badgee', () => {
     it('should return the available styles', () => {
       const styles = badgee.style();
       expect(styles).to.be.an('array');
-      expect(styles).to.have.length.of(3);
+      expect(styles).to.have.lengthOf(3);
     });
 
     it('should return a style definition', () => {
