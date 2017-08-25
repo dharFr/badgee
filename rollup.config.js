@@ -1,9 +1,9 @@
 import buble from 'rollup-plugin-buble';
 
 export default {
-  useStrict: false,
-  sourceMap: true,
-  entry: 'src/badgee.js',
+  strict: false,
+  sourcemap: true,
+  input: 'src/badgee.js',
   moduleContext: {
     'src/console.js': '(typeof window !== "undefined" ? window : global)'
     // The line below also works (and results in a smaller bundle) but breaks the tests
