@@ -55,7 +55,7 @@
     "rollup-plugin-buble": "^0.15.0",
     "sinon": "^3.0.0",
     "strip-json-comments-cli": "^1.0.1",
-    "uglify-js": "^2.8.29",
+    "uglify-js": "^3.0.26",
     "watch": "^1.0.2"
   },
   "dependencies": {},
