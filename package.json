@@ -38,7 +38,7 @@
     "dev": "npm-run-all --silent open -p 'live-reload -s' 'serve -s' 'watch -s'"
   },
   "devDependencies": {
-    "buble": "^0.16.0",
+    "buble": "^0.17.0",
     "chai": "^4.1.0",
     "eslint": "^4.2.0",
     "gzip-size-cli": "^2.0.0",
