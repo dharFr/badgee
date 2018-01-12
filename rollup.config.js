@@ -2,7 +2,9 @@ import buble from 'rollup-plugin-buble';
 
 export default {
   strict: false,
-  sourcemap: true,
+  output: {
+    sourcemap: true,
+  },
   input: 'src/badgee.js',
   moduleContext: {
     'src/console.js': '(typeof window !== "undefined" ? window : global)'
