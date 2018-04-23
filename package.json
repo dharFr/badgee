@@ -51,7 +51,7 @@
     "npm-run-all": "^4.0.2",
     "opener": "^1.4.1",
     "rimraf": "^2.6.1",
-    "rollup": "^0.55.3",
+    "rollup": "^0.58.2",
     "rollup-plugin-buble": "^0.18.0",
     "sinon": "^4.2.2",
     "strip-json-comments-cli": "^1.0.1",
