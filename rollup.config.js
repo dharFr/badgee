@@ -1,7 +1,6 @@
 import buble from 'rollup-plugin-buble';
 
 export default {
-  strict: false,
   output: {
     sourcemap: true,
   },
