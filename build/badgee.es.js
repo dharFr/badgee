@@ -59,7 +59,7 @@ var configure = function(conf) {
 };
 
 // Create store to save styles
-var store$1 = {};
+var store = {};
 
 // Default properties for styles
 var defaultsStyle = {
@@ -73,12 +73,12 @@ var defaultsStyle = {
 var styles = function (name, style) {
   if (name != null && style != null) {
     style = extend(defaultsStyle, style);
-    store$1[name] = style;
+    store[name] = style;
   }
   else if (name != null) {
-    return store$1[name];
+    return store[name];
   }
-  return Object.keys(store$1);
+  return Object.keys(store);
 };
 
 var defaultStyle = function (style) {
@@ -90,7 +90,7 @@ var defaultStyle = function (style) {
 
 var style2Str = function (name) {
   var res = '';
-  each(store$1[name], function (style, k) {
+  each(store[name], function (style, k) {
     res += k + ":" + style + ";";
   });
   return res
@@ -141,8 +141,8 @@ var getFilter = function (onFilterChange) {
 };
 
 /* eslint-disable no-console */
-/*! badgee v1.2.0 - MIT license */
-var store = {};
+
+var store$1 = {};
 
 // Given a label, style and parentName, generate the full list of arguments to
 // pass to console method to get a foramted output
@@ -150,7 +150,7 @@ var argsForBadgee = function(label, style, parentName) {
   var args = [];
 
   if (parentName) {
-    var ref = store[parentName];
+    var ref = store$1[parentName];
     var badgee = ref[0];
     var style$1 = ref[1];
     var parent = ref[2];
@@ -186,8 +186,9 @@ var _defineMethods = function(style, parentName) {
   else {
     // Define Badgee 'formatable' methods form console object
     eachFormatableMethod(function (method) {
-      this$1[method] = (ref = console[method]).bind.apply(ref, [ console ].concat( args ));
       var ref;
+
+      this$1[method] = (ref = console[method]).bind.apply(ref, [ console ].concat( args ));
     });
 
     // Define Badgee 'unformatable' methods form console object
@@ -206,7 +207,7 @@ var Badgee = function Badgee(label, style, parentName) {
   _defineMethods.bind(this, style, parentName)();
 
   // Store instance for later reference
-  store[label] = [this, style, parentName];
+  store$1[label] = [this, style, parentName];
 };
 
 // Defines a new Badgee instance with @ as parent Badge
@@ -217,7 +218,7 @@ Badgee.prototype.define = function define (label, style) {
 // ==================================
 
 var redefineMethodsForAllBadges = function () {
-  each(store, function (ref) {
+  each(store$1, function (ref) {
     var badgee = ref[0];
     var style = ref[1];
     var parent = ref[2];
@@ -230,7 +231,7 @@ var redefineMethodsForAllBadges = function () {
 var b = new Badgee;
 
 // Augment public instance with getter method
-b.get = function (label) { return (store[label] || {})[0]; };
+b.get = function (label) { return (store$1[label] || {})[0]; };
 
 // Some browsers don't allow to use bind on console object anyway
 // fallback to default if needed
