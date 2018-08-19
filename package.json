@@ -43,7 +43,7 @@
     "eslint": "^5.0.0",
     "gzip-size-cli": "^3.0.0",
     "http-server": "^0.11.0",
-    "jsdom": "^11.1.0",
+    "jsdom": "^12.0.0",
     "jsdom-global": "^3.0.2",
     "live-reload": "^1.1.0",
     "mkdirp": "^0.5.1",
