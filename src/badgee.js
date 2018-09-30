@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 /*! badgee v1.2.0 - MIT license */
-import { noop, extend, each } from './utils.js'
+import { noop, each } from './utils.js'
 import console, {
   eachMethod, eachFormatableMethod, eachUnformatableMethod
 } from './console.js'
@@ -47,12 +47,24 @@ const _defineMethods = function(style, parentName) {
   else {
     // Define Badgee 'formatable' methods form console object
     eachFormatableMethod((method) => {
-      this[method] = console[method].bind(console, ...args);
+      // bind() might not be defined in some browsers (e.g. IE9)
+      try {
+        this[method] = console[method].bind(console, ...args);
+      }
+      catch(e) {
+        this[method] = console[method];
+      }
     });
 
     // Define Badgee 'unformatable' methods form console object
     eachUnformatableMethod((method) => {
-      this[method] = console[method].bind(console);
+      // bind() might not be defined in some browsers (e.g. IE9)
+      try {
+        this[method] = console[method].bind(console);
+      }
+      catch(e) {
+        this[method] = console[method];
+      }
     });
   }
 
@@ -86,21 +98,10 @@ const redefineMethodsForAllBadges = () => {
 }
 
 // Create public Badgee instance
-let b = new Badgee;
+const b = new Badgee;
 
 // Augment public instance with getter method
 b.get = (label) => (store[label] || {})[0];
-
-// Some browsers don't allow to use bind on console object anyway
-// fallback to default if needed
-try {
-  b.log();
-} catch (e) {
-  b = extend(console, {
-    define : () => b,
-    get    : () => b,
-  });
-}
 
 // Augment public instance with a few utility methods
 b.style = styles;
