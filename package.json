@@ -47,7 +47,7 @@
     "jsdom-global": "^3.0.2",
     "live-reload": "^1.1.0",
     "mkdirp": "^0.5.1",
-    "mocha": "^5.0.0",
+    "mocha": "^6.2.0",
     "npm-run-all": "^4.0.2",
     "opener": "^1.4.1",
     "rimraf": "^2.6.1",
