@@ -18,7 +18,7 @@
   "scripts": {
     "start": "npm run dev",
     "pretest": "eslint src test && npm run build",
-    "test": "mocha -R spec --require jsdom-global/register --compilers js:buble/register test/",
+    "test": "mocha -R spec --require jsdom-global/register --require buble/register test/",
     "prebuild": "npm run clean",
     "build": "npm-run-all --silent clean -p rollup:* -p minify:* -s size",
     "rollup:cjs": "rollup -c rollup.config.js -f cjs -n $npm_package_name -o $npm_package_main",
