@@ -188,12 +188,24 @@ var _defineMethods = function(style, parentName) {
     eachFormatableMethod(function (method) {
       var ref;
 
-      this$1[method] = (ref = console[method]).bind.apply(ref, [ console ].concat( args ));
+      // bind() might not be defined in some browsers (e.g. IE9)
+      try {
+        this$1[method] = (ref = console[method]).bind.apply(ref, [ console ].concat( args ));
+      }
+      catch(e) {
+        this$1[method] = console[method];
+      }
     });
 
     // Define Badgee 'unformatable' methods form console object
     eachUnformatableMethod(function (method) {
-      this$1[method] = console[method].bind(console);
+      // bind() might not be defined in some browsers (e.g. IE9)
+      try {
+        this$1[method] = console[method].bind(console);
+      }
+      catch(e) {
+        this$1[method] = console[method];
+      }
     });
   }
 
@@ -233,17 +245,6 @@ var b = new Badgee;
 // Augment public instance with getter method
 b.get = function (label) { return (store$1[label] || {})[0]; };
 
-// Some browsers don't allow to use bind on console object anyway
-// fallback to default if needed
-try {
-  b.log();
-} catch (e) {
-  b = extend(console, {
-    define : function () { return b; },
-    get    : function () { return b; },
-  });
-}
-
 // Augment public instance with a few utility methods
 b.style = styles;
 b.defaultStyle  = defaultStyle;
@@ -257,7 +258,5 @@ b.config = function(conf) {
   return config;
 };
 
-var b$1 = b;
-
-export default b$1;
+export default b;
 //# sourceMappingURL=badgee.es.js.map
