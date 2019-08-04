@@ -53,7 +53,7 @@
     "rimraf": "^2.6.1",
     "rollup": "^1.19.3",
     "rollup-plugin-buble": "^0.19.2",
-    "sinon": "^7.3.2",
+    "sinon": "^7.4.0",
     "strip-json-comments-cli": "^1.0.1",
     "uglify-js": "^3.0.28",
     "watch": "^1.0.2"
