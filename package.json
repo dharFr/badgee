@@ -41,7 +41,7 @@
     "chai": "^4.1.0",
     "eslint": "^6.4.0",
     "gzip-size-cli": "^3.0.0",
-    "jsdom": "^15.1.1",
+    "jsdom": "^16.0.1",
     "jsdom-global": "^3.0.2",
     "mkdirp": "^0.5.1",
     "mocha": "^7.0.1",
