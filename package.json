@@ -43,7 +43,7 @@
     "gzip-size-cli": "^3.0.0",
     "jsdom": "^15.1.1",
     "jsdom-global": "^3.0.2",
-    "mkdirp": "^0.5.1",
+    "mkdirp": "^1.0.0",
     "mocha": "^6.2.0",
     "npm-run-all": "^4.0.2",
     "opener": "^1.4.1",
