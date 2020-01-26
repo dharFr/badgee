@@ -47,24 +47,12 @@ const _defineMethods = function(style, parentName) {
   else {
     // Define Badgee 'formatable' methods form console object
     eachFormatableMethod((method) => {
-      // bind() might not be defined in some browsers (e.g. IE9)
-      try {
-        this[method] = console[method].bind(console, ...args);
-      }
-      catch(e) {
-        this[method] = console[method];
-      }
+      this[method] = console[method].bind(console, ...args);
     });
 
     // Define Badgee 'unformatable' methods form console object
     eachUnformatableMethod((method) => {
-      // bind() might not be defined in some browsers (e.g. IE9)
-      try {
-        this[method] = console[method].bind(console);
-      }
-      catch(e) {
-        this[method] = console[method];
-      }
+      this[method] = console[method].bind(console);
     });
   }
 
