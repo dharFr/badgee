@@ -37,7 +37,7 @@
   },
   "devDependencies": {
     "browser-sync": "^2.26.7",
-    "buble": "^0.19.0",
+    "buble": "^0.20.0",
     "chai": "^4.1.0",
     "eslint": "^6.4.0",
     "gzip-size-cli": "^3.0.0",
