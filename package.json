@@ -44,7 +44,7 @@
     "jsdom": "^16.0.1",
     "jsdom-global": "^3.0.2",
     "mkdirp": "^1.0.3",
-    "mocha": "^7.0.1",
+    "mocha": "^7.1.2",
     "npm-run-all": "^4.0.2",
     "opener": "^1.4.1",
     "rimraf": "^3.0.0",
